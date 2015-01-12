@@ -20,7 +20,7 @@ connection.on('error', function (err) {
 
 connection.once('open', function () {
   logger.log(logger.categorys.INIT, logger.levels.DEBUG, filename,
-    'Connect to mongodb sucessfully');
+    'Connect to mongodb sucessfully: '+settings.dbUrl);
 });
 
 mongoose.set('debug', true);
