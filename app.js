@@ -25,7 +25,7 @@ var
     "_t": "e5e90828a5ea4c38beeb1f450f49677e",
     "currentUserId": "2048842998"
   },
-  //contentType = "application/x-www-form-urlencoded";
+//contentType = "application/x-www-form-urlencoded";
   path;
 
 /**
@@ -56,8 +56,10 @@ var getHospitalListByProvince = function (province) {
     .on('response', function (response) {
       response.on('data', function (data) {
         console.log('received ' + data.length + ' bytes of compressed data');
-        console.log('received data: ' + data );
+        console.log('received data:\n ' + data);
         deferred.resolve(data);
+        console.log('received data2:\n ' + deferred.promise);
+        //TODO 保存到数据库
       })
     })
     .on('error', function (err) {
@@ -71,16 +73,16 @@ var getHospitalListByProvince = function (province) {
 /**
  * 解析并存储JSON数据
  */
-var parseAndStore = function (){
+var parseAndStore = function () {
   var deferred = Q.defer();
 
   deferred.resolve();
 
 };
 
-getHospitalListByProvince()
-  .then(function(data){
-    console.log("haha");
-  }, function(err){
+getHospitalListByProvince('上海')
+  .then(function (data) {
+    console.log("haha--->" + data);
+  }, function (err) {
     console.log("oooo");
   });
