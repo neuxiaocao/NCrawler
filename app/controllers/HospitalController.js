@@ -1,0 +1,105 @@
+/**
+ *
+ *  NCrawler
+ *  Created by Jacky.L on 1/12/15.
+ *  Copyright (c) 2014 ZLYCare. All rights reserved.
+ */
+var
+  HDF = require("../configs/hdf"),
+  request = require('request'),
+  Q = require("q"),
+  _ = require('underscore'),
+  Hospital = require('../models/Hospital');
+/**
+ * 查询某个地区下面的所有医院列表
+ *
+ * @param province  省、市地址
+ *
+ */
+exports.getHospitalListByProvince = function (province) {
+
+  console.log("Begin getHospitalListByProvince");
+  var deferred = Q.defer();
+  province = province || '北京';
+  var path = HDF.getHospitalListByProvince;
+  var queryString =
+    _.reduce(
+      _.map(_.extend(HDF.query, {province: province}),
+        function (value, key) {
+          return key + "=" + value;
+        }),
+      function (memo, value) {
+        return memo + "&" + value;
+      });
+  var url = HDF.host + path + queryString;
+
+  console.log("QueryString: " + url);
+
+  request(
+    { method: 'GET'
+      , uri: url
+      , gzip: true
+    },
+    function (error, response, body) {
+      console.log("statusCode" + response.statusCode);
+      if (error){
+        console.log(err);
+        deferred.resolve(data);
+      }
+      deferred.resolve(body);
+    })
+    .on('data', function(data) {
+      // decompressed data as it is received
+      console.log('decoded chunk: ' + data.length);
+    });
+  return deferred.promise;
+};
+
+
+/**
+ * 解析并存储JSON数据
+ * @param json
+ * @returns {*}
+ */
+exports.parseAndStore = function (json){
+  console.log("Begin data parse and store function. " + json.length);
+  var deferred = Q.defer();
+  var raw = JSON.parse(json);
+  var rawContent = raw.content;
+  console.log("content:" + rawContent.length);
+  if (rawContent.length > 0){
+    return Hospital.create(rawContent)
+      .then(function (result) {
+        console.log("Create success: " + result);
+        deferred.resolve(result);
+        return deferred.promise;
+      }, function (err) {
+        console.log("Create error: "+err);
+        deferred.reject(err);
+        return deferred.promise;
+      });
+  }else{
+    console.log("Create is null!!");
+    deferred.resolve();
+    return deferred.promise;
+  }
+};
+//{
+//  signature: ""
+//  errorCode: "0"
+//  msg: "正常"
+//  content: [
+//    {
+//    id: "335"
+//    name: "301医院"
+//    district: "海淀"
+//    doctorCount: "1379"
+//    grade: "6"
+//    featuredFaculties: "综合"
+//    province: "北京"
+//    caseDoctorCount: "536"
+//    bookingDoctorCount: "117"
+//    _s: "D31bdQJpA2FQb11rAj0MJVciAGACMgAjBmxScQQyVT8MM1x-VmMDNgRmBGdRNAxnBSdWflIlUz4AMQVwCGYHKA9zWzMCYAMsUDtdLgJnDGhXeQA9AmYAMAZhUmEEMFUsDClcclYjA2sEJgQlUWgMPwV2VjdSU1M7AD0FYQgtB2YPJFtmAjEDPFAwXTwCZwxjV2QANgJmACMGKw"
+//    }
+//  ]
+//}
