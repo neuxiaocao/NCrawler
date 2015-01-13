@@ -8,6 +8,8 @@
 var
   Hospital = require('./app/controllers/HospitalController');
 
+console.log("测试fork-pull合并代码");
+
 //Demo: 查询并存储北京所有的医院
 Hospital.getHospitalListByProvince()
   .then(function(data){
