@@ -1,30 +1,32 @@
 /**
  *
  *  NCrawler
- *  Created by Jacky.L on 1/12/15.
+ *  Created by LuoMiao on 1/13/15.
  *  Copyright (c) 2014 ZLYCare. All rights reserved.
  */
 var
   HDF = require("../configs/hdf"),
   request = require('request'),
   Q = require("q"),
+  util = require("util"),
   _ = require('underscore'),
-  Hospital = require('../models/Hospital');
+  Department = require('../models/Department');
 /**
  * 查询某个地区下面的所有医院列表
  *
- * @param province  省、市地址
- *
  */
-exports.getHospitalListByProvince = function (province) {
+exports.getDepartmentListByHospitalId = function (hospitalId) {
 
-  console.log("Begin getHospitalListByProvince");
+  console.log("Begin getDepartmentListByProvince");
   var deferred = Q.defer();
-  province = province || '北京';
-  var path = HDF.getHospitalListByProvince;
+  if (hospitalId == undefined){
+    return;
+  }
+
+  var path = HDF.getHospitalFacultyListByHospitalId;
   var queryString =
     _.reduce(
-      _.map(_.extend(HDF.query, {province: province}),
+      _.map(_.extend(HDF.query, {hospitalId: hospitalId}),
         function (value, key) {
           return key + "=" + value;
         }),
@@ -44,7 +46,7 @@ exports.getHospitalListByProvince = function (province) {
       console.log("statusCode" + response.statusCode);
       if (error){
         console.log(error);
-        deferred.resolve('');
+        deferred.resolve("");
       }
       deferred.resolve(body);
     })
@@ -55,8 +57,8 @@ exports.getHospitalListByProvince = function (province) {
   return deferred.promise;
 };
 
-exports.getHospitalId = function () {
-  return Hospital.find({}, "-_id id").exec();
+exports.getDepartmentId = function () {
+  return Department.find({}, "-_id id").exec();
 };
 
 /**
@@ -64,14 +66,22 @@ exports.getHospitalId = function () {
  * @param json
  * @returns {*}
  */
-exports.parseAndStore = function (json){
+exports.parseAndStore = function (json, id){
   console.log("Begin data parse and store function. " + json.length);
   var deferred = Q.defer();
-  var raw = JSON.parse(json);
-  var rawContent = raw.content;
-  console.log("content:" + rawContent.length);
-  if (rawContent.length > 0){
-    return Hospital.create(rawContent)
+  var res = JSON.parse(json);
+  var content = res.content;
+
+  if (id == undefined){
+    console.log("id is undefined");
+    return;
+  }
+  console.log("content:" + content.length);
+  if (content.length > 0){
+    for(var i =0; i<content.length; i++){
+      _.extend(content[i], {hospitalId: id});
+    }
+    return Department.create(content)
       .then(function (result) {
         console.log("Create success: " + result);
         deferred.resolve(result);

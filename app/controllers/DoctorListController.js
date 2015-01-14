@@ -9,22 +9,30 @@ var
   request = require('request'),
   Q = require("q"),
   _ = require('underscore'),
-  Hospital = require('../models/Hospital');
+  DoctorList = require('../models/DoctorList');
+
+var
+  pageSize = 1000, //每一页获取的数据
+  pageId = 1;
+
 /**
- * 查询某个地区下面的所有医院列表
+ * 查询某个医院科室医生列表
  *
- * @param province  省、市地址
+ * @param departmentId  科室id
  *
  */
-exports.getHospitalListByProvince = function (province) {
+exports.getDoctorListByDepartmentId = function (departmentId) {
+  console.log("Begin getDoctorListByDepartmentId");
 
-  console.log("Begin getHospitalListByProvince");
+  if (departmentId == undefined) {//TODO 测试下，是否可以当id为undefined时返回所有科室医生信息？
+    return;
+  }
+
   var deferred = Q.defer();
-  province = province || '北京';
-  var path = HDF.getHospitalListByProvince;
+  var path = HDF.getDoctorListByDepartmentId;
   var queryString =
     _.reduce(
-      _.map(_.extend(HDF.query, {province: province}),
+      _.map(_.extend(HDF.query, {pageSize: pageSize, hospitalFacultyId: departmentId, pageId: pageId}),
         function (value, key) {
           return key + "=" + value;
         }),
@@ -36,27 +44,29 @@ exports.getHospitalListByProvince = function (province) {
   console.log("QueryString: " + url);
 
   request(
-    { method: 'GET'
+    {
+      method: 'GET'
       , uri: url
       , gzip: true
     },
     function (error, response, body) {
       console.log("statusCode" + response.statusCode);
-      if (error){
+      if (error) {
         console.log(error);
         deferred.resolve('');
       }
       deferred.resolve(body);
     })
-    .on('data', function(data) {
+    .on('data', function (data) {
       // decompressed data as it is received
       console.log('decoded chunk: ' + data.length);
     });
+
   return deferred.promise;
 };
 
-exports.getHospitalId = function () {
-  return Hospital.find({}, "-_id id").exec();
+exports.getId = function () {
+  return DoctorList.find({}, "-_id id").exec();
 };
 
 /**
@@ -64,45 +74,34 @@ exports.getHospitalId = function () {
  * @param json
  * @returns {*}
  */
-exports.parseAndStore = function (json){
+exports.parseAndStore = function (json, departmentId) {
   console.log("Begin data parse and store function. " + json.length);
+
   var deferred = Q.defer();
   var raw = JSON.parse(json);
-  var rawContent = raw.content;
-  console.log("content:" + rawContent.length);
-  if (rawContent.length > 0){
-    return Hospital.create(rawContent)
+  var content = raw.content;
+  console.log("content:" + content.length);
+  if (content.length > 0) {
+    for (var i = 0; i < content.length; i++) {
+      _.extend(content[i], {departmentId: departmentId});
+    }
+
+    console.log("---" + content[0]);
+
+    return DoctorList.create(content)
       .then(function (result) {
         console.log("Create success: " + result);
         deferred.resolve(result);
         return deferred.promise;
       }, function (err) {
-        console.log("Create error: "+err);
+        console.log("Create error: " + err);
         deferred.reject(err);
         return deferred.promise;
       });
-  }else{
+  } else {
     console.log("Create is null!!");
     deferred.resolve();
     return deferred.promise;
   }
 };
-//{
-//  signature: ""
-//  errorCode: "0"
-//  msg: "正常"
-//  content: [
-//    {
-//    id: "335"
-//    name: "301医院"
-//    district: "海淀"
-//    doctorCount: "1379"
-//    grade: "6"
-//    featuredFaculties: "综合"
-//    province: "北京"
-//    caseDoctorCount: "536"
-//    bookingDoctorCount: "117"
-//    _s: "D31bdQJpA2FQb11rAj0MJVciAGACMgAjBmxScQQyVT8MM1x-VmMDNgRmBGdRNAxnBSdWflIlUz4AMQVwCGYHKA9zWzMCYAMsUDtdLgJnDGhXeQA9AmYAMAZhUmEEMFUsDClcclYjA2sEJgQlUWgMPwV2VjdSU1M7AD0FYQgtB2YPJFtmAjEDPFAwXTwCZwxjV2QANgJmACMGKw"
-//    }
-//  ]
-//}
+
