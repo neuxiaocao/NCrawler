@@ -134,10 +134,6 @@ Hospital.getHospitalId()
       Department.getDepartmentListByHospitalIdAndUpdate(hs.id, hs._id)
         .then(function (data) {
           console.log("Finish get data.");
-          return Department.parseAndStore(data, id);
-        })
-        .then(function () {
-          console.log("Finish parse and store data.");
         }, function (err) {
           console.log("oooo:" + err);
         });
