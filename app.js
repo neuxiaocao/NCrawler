@@ -99,27 +99,50 @@ var
 /**
  * 查询所有医生详情
  */
-DoctorList.getId()
+//DoctorList.getId()
+//  .then(function (ids) {
+//    //var ids2 = JSON.parse(JSON.stringify(ids));
+//    var idsArr = _.pluck(ids, 'id');
+//    console.log("##### " + idsArr);
+//    for (var i = 0; i < idsArr.length; i++) {
+//      var id = idsArr[i];
+//      Doctor.getDoctorInfoByDoctorId(id)
+//        .then(function(data){
+//          console.log("Finish get data.");
+//          return Doctor.parseAndStore(data);
+//        })
+//        .then(function(){
+//          console.log("Finish parse and store data.");
+//        },function(err){
+//          console.log("oooo:" + err);
+//        });
+//
+//    }
+//  });
+
+/**
+ * 关联所有科室的医院_id
+ */
+Hospital.getHospitalId()
   .then(function (ids) {
     //var ids2 = JSON.parse(JSON.stringify(ids));
-    var idsArr = _.pluck(ids, 'id');
-    console.log("##### " + idsArr);
-    for (var i = 0; i < idsArr.length; i++) {
-      var id = idsArr[i];
-      Doctor.getDoctorInfoByDoctorId(id)
-        .then(function(data){
+    //var idsArr = _.pluck(ids, 'id');
+    //console.log("##### " + idsArr);
+    for (var i = 0; i < ids.length; i++) {
+      var hs = ids[i];
+
+      Department.getDepartmentListByHospitalIdAndUpdate(hs.id, hs._id)
+        .then(function (data) {
           console.log("Finish get data.");
-          return Doctor.parseAndStore(data);
+          return Department.parseAndStore(data, id);
         })
-        .then(function(){
+        .then(function () {
           console.log("Finish parse and store data.");
-        },function(err){
+        }, function (err) {
           console.log("oooo:" + err);
         });
-
     }
   });
-
 
 function sleep(sleepTime) {
   for(var start = Date.now(); Date.now() - start <= sleepTime; ) { }

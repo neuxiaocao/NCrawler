@@ -17,7 +17,6 @@ var
  */
 exports.getDepartmentListByHospitalId = function (hospitalId) {
 
-  console.log("Begin getDepartmentListByProvince");
   var deferred = Q.defer();
   if (hospitalId == undefined){
     return;
@@ -59,6 +58,14 @@ exports.getDepartmentListByHospitalId = function (hospitalId) {
 
 exports.getDepartmentId = function () {
   return Department.find({}, "-_id id").exec();
+};
+
+/**
+ * 查询某个地区下面的所有医院列表
+ *
+ */
+exports.getDepartmentListByHospitalIdAndUpdate = function (hospitalId, _id) {
+  return Department.update({hospitalId: hospitalId}, {hospitalId: _id}, {multi: true}).exec();
 };
 
 /**

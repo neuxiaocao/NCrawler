@@ -65,6 +65,9 @@ exports.getDoctorInfoByDoctorId = function (doctorId) {
   return deferred.promise;
 };
 
+exports.getId = function () {
+  return Doctor.find({}, "id").exec();
+};
 
 /**
  * 解析并存储JSON数据
