@@ -47,17 +47,17 @@ exports.getDepartmentListByHospitalId = function (hospitalId) {
         console.log(error);
         deferred.resolve("");
       }
+      console.log("id:" + hospitalId)
+      body = JSON.parse(body);
+      body.id = hospitalId;
       deferred.resolve(body);
     })
-    .on('data', function(data) {
-      // decompressed data as it is received
-      console.log('decoded chunk: ' + data.length);
-    });
+
   return deferred.promise;
 };
 
 exports.getDepartmentId = function () {
-  return Department.find({}, "-_id id").exec();
+  return Department.find({}, "id").exec();
 };
 
 /**
@@ -74,10 +74,9 @@ exports.getDepartmentListByHospitalIdAndUpdate = function (hospitalId, _id) {
  * @returns {*}
  */
 exports.parseAndStore = function (json, id){
-  console.log("Begin data parse and store function. " + json.length);
+  console.log("Begin data parse and store function. " + id);
   var deferred = Q.defer();
-  var res = JSON.parse(json);
-  var content = res.content;
+  var content = json.content;
 
   if (id == undefined){
     console.log("id is undefined");
@@ -90,7 +89,7 @@ exports.parseAndStore = function (json, id){
     }
     return Department.create(content)
       .then(function (result) {
-        console.log("Create success: " + result);
+        //console.log("Create success: " + result);
         deferred.resolve(result);
         return deferred.promise;
       }, function (err) {

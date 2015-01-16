@@ -65,6 +65,14 @@ exports.getDoctorInfoByDoctorId = function (doctorId) {
   return deferred.promise;
 };
 
+exports.getDoctorByHospitalIdAndUpdate = function (hospitalId, _id) {
+  return Doctor.update({hospitalId: hospitalId}, {hospitalId: _id}, {multi: true}).exec();
+};
+
+exports.getDoctorHospitalFacultyIdByAndUpdate = function (hospitalFacultyId, _id) {
+  return Doctor.update({hospitalFacultyId: hospitalFacultyId}, {hospitalFacultyId: _id}, {multi: true}).exec();
+};
+
 exports.getId = function () {
   return Doctor.find({}, "id").exec();
 };
@@ -94,3 +102,6 @@ exports.parseAndStore = function (json) {
     });
 };
 
+exports.find = function (con){
+  return Doctor.find(con).exec();
+};
