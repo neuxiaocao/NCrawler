@@ -56,10 +56,6 @@ exports.getDoctorInfoByDoctorId = function (doctorId) {
         deferred.resolve('');
       }
       deferred.resolve(body);
-    })
-    .on('data', function (data) {
-      // decompressed data as it is received
-      console.log('decoded chunk: ' + data.length);
     });
 
   return deferred.promise;

@@ -90,7 +90,7 @@ exports.parseAndStore = function (json, departmentId) {
 
     return DoctorList.create(content)
       .then(function (result) {
-        console.log("Create success: " + result);
+        //console.log("Create success: " + result);
         deferred.resolve(result);
         return deferred.promise;
       }, function (err) {
