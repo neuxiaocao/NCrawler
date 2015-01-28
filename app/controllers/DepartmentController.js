@@ -103,6 +103,15 @@ exports.parseAndStore = function (json, id){
     return deferred.promise;
   }
 };
+
+exports.find = function (con){
+  return Department.find(con).exec();
+};
+
+exports.create = function(spl){
+  return Department.create(spl);
+};
+
 //{
 //  signature: ""
 //  errorCode: "0"

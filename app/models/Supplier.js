@@ -42,7 +42,7 @@ var supplierSchema = new Schema({
   searchTags: [String],       //搜索标签
   eduBackground: [String],  //教育背景
   specialize: {type: String, default: ""},//擅长, 例如: "骨创伤及晚期修复"
-  goodVoteCount: {type: String, default: "0"},//好评数
+  goodVoteCount: {type: String, default: 0},//好评数
   brokerActiveNum: {type:Number, default: 0 } //活跃代理人得数量
 
   // homePageUrl: {type: String, default: ""},//个人主页

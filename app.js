@@ -11,6 +11,7 @@ var
   DoctorList = require('./app/controllers/DoctorListController'),
   Supplier = require('./app/controllers/SupplierController'),
   Doctor = require('./app/controllers/DoctorController'),
+  Index = require('./app/models/Index'),
   Department = require('./app/controllers/DepartmentController');
 
 ///**
@@ -98,26 +99,26 @@ var
 /**
  * 查询所有医生详情
  */
-DoctorList.getId()
-  .then(function (ids) {
-    //var ids2 = JSON.parse(JSON.stringify(ids));
-    var idsArr = _.pluck(ids, 'id');
-    console.log("##### " + idsArr);
-    for (var i = 0; i < idsArr.length; i++) {
-      var id = idsArr[i];
-      Doctor.getDoctorInfoByDoctorId(id)
-        .then(function(data){
-          console.log("Finish get data.");
-          return Doctor.parseAndStore(data);
-        })
-        .then(function(){
-          console.log("Finish parse and store data.");
-        },function(err){
-          console.log("oooo:" + err);
-        });
-
-    }
-  });
+//DoctorList.getId()
+//  .then(function (ids) {
+//    //var ids2 = JSON.parse(JSON.stringify(ids));
+//    var idsArr = _.pluck(ids, 'id');
+//    console.log("##### " + idsArr);
+//    for (var i = 0; i < idsArr.length; i++) {
+//      var id = idsArr[i];
+//      Doctor.getDoctorInfoByDoctorId(id)
+//        .then(function(data){
+//          console.log("Finish get data.");
+//          return Doctor.parseAndStore(data);
+//        })
+//        .then(function(){
+//          console.log("Finish parse and store data.");
+//        },function(err){
+//          console.log("oooo:" + err);
+//        });
+//
+//    }
+//  });
 
 /**
  * 关联所有科室的医院_id
@@ -179,37 +180,97 @@ DoctorList.getId()
 //    }
 //  });
 
-//Doctor.find({})
-//  .then(function(ds){
-//    var arr = [];
-//
-//    ds.forEach(function(d){
-//      var ss = d.fullGrade.split(" ");
-//      var pos = ss[0]||ss[1];
-//
-//      var s = {
-//        _id: d._id,
-//        name: d.name,
-//        avatar: d.logoUrl,
-//
-//        doctorIntro: d.doctorIntro,
-//        hospitalId: d.hospitalId,
-//        hospital: d.hospitalName,
-//        province: d.province,
-//        departmentId: d.hospitalFacultyId,
-//        department: d.hospitalFacultyName,
-//        fullGrade: d.fullGrade,
-//        position: pos,
-//        specialize: d.specialize,
-//        goodVoteCount: d.goodVoteCount
-//      };
-//
-//      arr.push(s);
-//    });
-//
-//    Supplier.create(arr);
-//  });
+//createSupplier();
+//createHptIndex();
+createDpmIndex();
 
+function createSupplier(){
+  Doctor.find({})
+    .then(function(ds){
+      var arr = [];
+
+      ds.forEach(function(d){
+        var ss = d.fullGrade.split(" ");
+        var pos = ss[0]||ss[1];
+
+        var s = {
+          _id: d._id,
+          name: d.name,
+          avatar: d.logoUrl,
+
+          doctorIntro: d.doctorIntro,
+          hospitalId: d.hospitalId,
+          hospital: d.hospitalName,
+          province: d.province,
+          departmentId: d.hospitalFacultyId,
+          department: d.hospitalFacultyName,
+          fullGrade: d.fullGrade,
+          position: pos,
+          specialize: d.specialize,
+          goodVoteCount: d.goodVoteCount
+        };
+
+        arr.push(s);
+      });
+
+      Supplier.create(arr);
+    });
+};
+
+function createDpmIndex(){
+  Department.find({})
+    .then(function(ds){
+      var arr = [];
+
+      ds.forEach(function(d){
+        var s = {
+          _id: d._id,
+          name: d.name,
+          type: 3,
+
+          hospitalId: d.hospitalId,
+          category: d.category,
+          order: d.order,
+
+          doctorCount: d.doctorCount,
+          caseDoctorCount: d.caseDoctorCount,
+          bookingDoctorCount: d.bookingDoctorCount
+        };
+
+        arr.push(s);
+      });
+
+      Index.create(arr);
+    });
+};
+
+function createHptIndex(){
+  Hospital.find({})
+    .then(function(ds){
+      var arr = [];
+
+      ds.forEach(function(d){
+        var s = {
+          _id: d._id,
+          name: d.name,
+          type: 2,
+
+          district: d.district,
+          grade: d.grade,
+          featuredFaculties: d.featuredFaculties,
+          province: d.province,
+
+          doctorCount: d.doctorCount,
+          caseDoctorCount: d.caseDoctorCount,
+          bookingDoctorCount: d.bookingDoctorCount
+        };
+
+        arr.push(s);
+      });
+
+      Index.create(arr);
+    });
+};
 
 function sleep(sleepTime) {
   for(var start = Date.now(); Date.now() - start <= sleepTime; ) { }

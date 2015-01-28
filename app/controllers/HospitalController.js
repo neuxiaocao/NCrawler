@@ -87,6 +87,15 @@ exports.parseAndStore = function (json){
     return deferred.promise;
   }
 };
+
+exports.find = function (con){
+  return Hospital.find(con).exec();
+};
+
+exports.create = function(spl){
+  return Hospital.create(spl);
+};
+
 //{
 //  signature: ""
 //  errorCode: "0"
