@@ -1,30 +1,31 @@
 /**
  *
  *  NCrawler
- *  Created by Jacky.L on 1/12/15.
+ *  Created by LuoMiao on 1/13/15.
  *  Copyright (c) 2014 ZLYCare. All rights reserved.
  */
 var
   HDF = require("../configs/hdf"),
   request = require('request'),
   Q = require("q"),
+  util = require("util"),
   _ = require('underscore'),
-  Hospital = require('../models/Hospital');
+  Department = require('../models/Department');
 /**
  * 查询某个地区下面的所有医院列表
  *
- * @param province  省、市地址
- *
  */
-exports.getHospitalListByProvince = function (province) {
+exports.getDepartmentListByHospitalId = function (hospitalId) {
 
-  console.log("Begin getHospitalListByProvince");
   var deferred = Q.defer();
-  province = province || '北京';
-  var path = HDF.getHospitalListByProvince;
+  if (hospitalId == undefined){
+    return;
+  }
+
+  var path = HDF.getHospitalFacultyListByHospitalId;
   var queryString =
     _.reduce(
-      _.map(_.extend(HDF.query, {province: province}),
+      _.map(_.extend(HDF.query, {hospitalId: hospitalId}),
         function (value, key) {
           return key + "=" + value;
         }),
@@ -44,19 +45,27 @@ exports.getHospitalListByProvince = function (province) {
       console.log("statusCode" + response.statusCode);
       if (error){
         console.log(error);
-        deferred.resolve('');
+        deferred.resolve("");
       }
+      console.log("id:" + hospitalId)
+      body = JSON.parse(body);
+      body.id = hospitalId;
       deferred.resolve(body);
     })
-    .on('data', function(data) {
-      // decompressed data as it is received
-      console.log('decoded chunk: ' + data.length);
-    });
+
   return deferred.promise;
 };
 
-exports.getHospitalId = function () {
-  return Hospital.find({}, "id").exec();
+exports.getDepartmentId = function () {
+  return Department.find({}, "id").exec();
+};
+
+/**
+ * 查询某个地区下面的所有医院列表
+ *
+ */
+exports.getDepartmentListByHospitalIdAndUpdate = function (hospitalId, _id) {
+  return Department.update({hospitalId: hospitalId}, {hospitalId: _id}, {multi: true}).exec();
 };
 
 /**
@@ -64,16 +73,23 @@ exports.getHospitalId = function () {
  * @param json
  * @returns {*}
  */
-exports.parseAndStore = function (json){
-  console.log("Begin data parse and store function. " + json.length);
+exports.parseAndStore = function (json, id){
+  console.log("Begin data parse and store function. " + id);
   var deferred = Q.defer();
-  var raw = JSON.parse(json);
-  var rawContent = raw.content;
-  console.log("content:" + rawContent.length);
-  if (rawContent.length > 0){
-    return Hospital.create(rawContent)
+  var content = json.content;
+
+  if (id == undefined){
+    console.log("id is undefined");
+    return;
+  }
+  console.log("content:" + content.length);
+  if (content.length > 0){
+    for(var i =0; i<content.length; i++){
+      _.extend(content[i], {hospitalId: id});
+    }
+    return Department.create(content)
       .then(function (result) {
-        console.log("Create success: " + result);
+        //console.log("Create success: " + result);
         deferred.resolve(result);
         return deferred.promise;
       }, function (err) {
@@ -89,11 +105,11 @@ exports.parseAndStore = function (json){
 };
 
 exports.find = function (con){
-  return Hospital.find(con).exec();
+  return Department.find(con).exec();
 };
 
 exports.create = function(spl){
-  return Hospital.create(spl);
+  return Department.create(spl);
 };
 
 //{

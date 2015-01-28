@@ -13,9 +13,9 @@ var
 
 var hospitalSchema = new Schema({
   // 基本属性
-  type: {type: String, default: 'hdf'},//hdf - 来源好大夫
-  id: String, //内部编号
-  name: String,
+  sourceType: {type: String, default: 'hdf'},//hdf - 来源好大夫
+  id: {type: String, unique: true}, //内部编号
+  name: {type: String, default: ''},//名称
   district: String,
   doctorCount: String,
   grade: String,
