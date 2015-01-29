@@ -17,6 +17,7 @@ var hospitalSchema = new Schema({
   id: {type: String, unique: true}, //内部编号
   name: {type: String, default: ''},//名称
   district: String,
+  gps: [Number,Number],//经纬度
   doctorCount: String,
   grade: String,
   featuredFaculties: String,//特点,类型

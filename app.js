@@ -184,96 +184,96 @@ console.log("测试fork-pull合并代码");
 
 //createSupplier();
 //createHptIndex();
-createDpmIndex();
+//createDpmIndex();
 
-function createSupplier(){
-  Doctor.find({})
-    .then(function(ds){
-      var arr = [];
-
-      ds.forEach(function(d){
-        var ss = d.fullGrade.split(" ");
-        var pos = ss[0]||ss[1];
-
-        var s = {
-          _id: d._id,
-          name: d.name,
-          avatar: d.logoUrl,
-
-          doctorIntro: d.doctorIntro,
-          hospitalId: d.hospitalId,
-          hospital: d.hospitalName,
-          province: d.province,
-          departmentId: d.hospitalFacultyId,
-          department: d.hospitalFacultyName,
-          fullGrade: d.fullGrade,
-          position: pos,
-          specialize: d.specialize,
-          goodVoteCount: d.goodVoteCount
-        };
-
-        arr.push(s);
-      });
-
-      Supplier.create(arr);
-    });
-};
-
-function createDpmIndex(){
-  Department.find({})
-    .then(function(ds){
-      var arr = [];
-
-      ds.forEach(function(d){
-        var s = {
-          _id: d._id,
-          name: d.name,
-          type: 3,
-
-          hospitalId: d.hospitalId,
-          category: d.category,
-          order: d.order,
-
-          doctorCount: d.doctorCount,
-          caseDoctorCount: d.caseDoctorCount,
-          bookingDoctorCount: d.bookingDoctorCount
-        };
-
-        arr.push(s);
-      });
-
-      Index.create(arr);
-    });
-};
-
-function createHptIndex(){
-  Hospital.find({})
-    .then(function(ds){
-      var arr = [];
-
-      ds.forEach(function(d){
-        var s = {
-          _id: d._id,
-          name: d.name,
-          type: 2,
-
-          district: d.district,
-          grade: d.grade,
-          featuredFaculties: d.featuredFaculties,
-          province: d.province,
-
-          doctorCount: d.doctorCount,
-          caseDoctorCount: d.caseDoctorCount,
-          bookingDoctorCount: d.bookingDoctorCount
-        };
-
-        arr.push(s);
-      });
-
-      Index.create(arr);
-    });
-};
-
-function sleep(sleepTime) {
-  for(var start = Date.now(); Date.now() - start <= sleepTime; ) { }
-}
+//function createSupplier(){
+//  Doctor.find({})
+//    .then(function(ds){
+//      var arr = [];
+//
+//      ds.forEach(function(d){
+//        var ss = d.fullGrade.split(" ");
+//        var pos = ss[0]||ss[1];
+//
+//        var s = {
+//          _id: d._id,
+//          name: d.name,
+//          avatar: d.logoUrl,
+//
+//          doctorIntro: d.doctorIntro,
+//          hospitalId: d.hospitalId,
+//          hospital: d.hospitalName,
+//          province: d.province,
+//          departmentId: d.hospitalFacultyId,
+//          department: d.hospitalFacultyName,
+//          fullGrade: d.fullGrade,
+//          position: pos,
+//          specialize: d.specialize,
+//          goodVoteCount: d.goodVoteCount
+//        };
+//
+//        arr.push(s);
+//      });
+//
+//      Supplier.create(arr);
+//    });
+//};
+//
+//function createDpmIndex(){
+//  Department.find({})
+//    .then(function(ds){
+//      var arr = [];
+//
+//      ds.forEach(function(d){
+//        var s = {
+//          _id: d._id,
+//          name: d.name,
+//          type: 3,
+//
+//          hospitalId: d.hospitalId,
+//          category: d.category,
+//          order: d.order,
+//
+//          doctorCount: d.doctorCount,
+//          caseDoctorCount: d.caseDoctorCount,
+//          bookingDoctorCount: d.bookingDoctorCount
+//        };
+//
+//        arr.push(s);
+//      });
+//
+//      Index.create(arr);
+//    });
+//};
+//
+//function createHptIndex(){
+//  Hospital.find({})
+//    .then(function(ds){
+//      var arr = [];
+//
+//      ds.forEach(function(d){
+//        var s = {
+//          _id: d._id,
+//          name: d.name,
+//          type: 2,
+//
+//          district: d.district,
+//          grade: d.grade,
+//          featuredFaculties: d.featuredFaculties,
+//          province: d.province,
+//
+//          doctorCount: d.doctorCount,
+//          caseDoctorCount: d.caseDoctorCount,
+//          bookingDoctorCount: d.bookingDoctorCount
+//        };
+//
+//        arr.push(s);
+//      });
+//
+//      Index.create(arr);
+//    });
+//};
+//
+//function sleep(sleepTime) {
+//  for(var start = Date.now(); Date.now() - start <= sleepTime; ) { }
+//}

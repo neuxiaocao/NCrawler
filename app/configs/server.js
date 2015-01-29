@@ -5,7 +5,7 @@
  *  Copyright (c) 2014 ZLYCare. All rights reserved.
  */
 var
-  db = "hdfdata",
+  db = "hdf",
   dbUrl_ut = 'mongodb://localhost/zlyweb_test',
   dbUrl_production = 'mongodb://ZLY-DB-3/' + db,
   dbUrl_test = 'mongodb://localhost/' + db,
