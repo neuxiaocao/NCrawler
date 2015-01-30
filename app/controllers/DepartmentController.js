@@ -44,14 +44,14 @@ exports.getDepartmentListByHospitalId = function (hospitalId) {
     function (error, response, body) {
       console.log("statusCode" + response.statusCode);
       if (error){
-        console.log(error);
+        console.log("ReqError:"+error);
         deferred.resolve("");
       }
       console.log("id:" + hospitalId)
       body = JSON.parse(body);
       body.id = hospitalId;
       deferred.resolve(body);
-    })
+    });
 
   return deferred.promise;
 };

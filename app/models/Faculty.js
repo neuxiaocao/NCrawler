@@ -13,7 +13,8 @@ var
 var FacultySchema = new Schema({
   // 基本属性
   source: {type: String, default: 'hdf'},//hdf - 来源好大夫
-
+  key: {type: String, unique: true}, //一级科室索引键
+  name:{type: String, default:"" },//一级科室名
   createdAt: {type: Number, default: Date.now},//用户注册时间
   updatedAt: {type: Number, default: Date.now},//用户最近的更新时间
   isDeleted: {type: Boolean, default: false}//该条记录是否被删除

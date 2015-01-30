@@ -13,12 +13,15 @@ var
   Doctor = require('./app/controllers/DoctorController'),
   Index = require('./app/models/Index'),
   Department = require('./app/controllers/DepartmentController');
-
+  Faculty = require('./app/controllers/FacultyController'),
+  SubFaculty = require('./app/models/SubFaculty'),
+  HDF = require("./app/configs/hdf"),
+  DiseaseController= require('./app/controllers/DiseaseController.js');
 console.log("测试fork-pull合并代码");
 
-///**
-// * 查询并存储北京所有的医院
-// */
+/**
+* 查询并存储北京所有的医院
+*/
 //Hospital.getHospitalListByProvince()
 //  .then(function(data){
 //    console.log("Finish get data.");
@@ -33,94 +36,73 @@ console.log("测试fork-pull合并代码");
 /**
  * 获取所有医院科室
  */
-//Hospital.getHospitalId()
-//  .then(function (ids) {
-//    //var ids2 = JSON.parse(JSON.stringify(ids));
-//    var idsArr = _.pluck(ids, 'id');
-//    console.log("##### " + idsArr);
-//    for (var i = 0; i < idsArr.length; i++) {
-//      var id = idsArr[i];
-//
-//      Department.getDepartmentListByHospitalId(id)
-//        .then(function (data) {
-//          console.log("Finish get data.");
-//          return Department.parseAndStore(data, data.id);
-//        })
-//        .then(function () {
-//          console.log("Finish parse and store data.");
-//        }, function (err) {
-//          console.log("oooo:" + err);
-//        });
-//    }
-//  });
+/*Hospital.getHospitalId()
+  .then(function (ids) {
+    //var ids2 = JSON.parse(JSON.stringify(ids));
+    var idsArr = _.pluck(ids, 'id');
+    console.log("Hospital list ##### : " + idsArr);
+    for (var i = 0; i < idsArr.length; i++) {
+      var id = idsArr[i];
 
-//Department.getDepartmentListByHospitalId(1)
-//  .then(function(data){
-//    console.log("Finish get data.");
-//    return Department.parseAndStore(data, 1);
-//  })
-//  .then(function(){
-//    console.log("Finish parse and store data.");
-//  },function(err){
-//    console.log("oooo:" + err);
-//  });
+      Department.getDepartmentListByHospitalId(id)
+        .then(function (data) {
+          console.log("Finish get data.");
+          return Department.parseAndStore(data, data.id);
+        })
+        .then(function () {
+          console.log("Finish parse and store data.");
+        }, function (err) {
+          console.log("oooo:" + err);
+        });
+    }
+  });
+  */
 
 /**
  * 查询所有医生列表详情
  */
-//Department.getDepartmentId()
-//  .then(function (ids) {
-//    var idsArr = _.pluck(ids, 'id');
-//    console.log("##### " + idsArr);
-//    for (var i = 0; i < idsArr.length; i++) {
-//      var id = idsArr[i];
-//      DoctorList.getDoctorListByDepartmentId(id)
-//        .then(function (data) {
-//          console.log("Finish get data.");
-//          return DoctorList.parseAndStore(data, id);
-//        })
-//        .then(function () {
-//          console.log("Finish parse and store data.");
-//        }, function (err) {
-//          console.log("oooo:" + err);
-//        });
-//
-//    }
-//  });
-//DoctorList.getDoctorListByDepartmentId(125)
-//  .then(function (data) {
-//    console.log("Finish get data.");
-//    return DoctorList.parseAndStore(data,125);
-//  })
-//  .then(function () {
-//    console.log("Finish parse and store data.");
-//  }, function (err) {
-//    console.log("oooo:" + err);
-//  });
+/*Department.getDepartmentId()
+  .then(function (ids) {
+    var idsArr = _.pluck(ids, 'id');
+    console.log("##### " + idsArr);
+    for (var i = 0; i < idsArr.length; i++) {
+      var id = idsArr[i];
+      DoctorList.getDoctorListByDepartmentId(id)
+        .then(function (data) {
+          console.log("Finish get data.");
+          return DoctorList.parseAndStore(data, id);
+        })
+        .then(function () {
+          console.log("Finish parse and store data.");
+        }, function (err) {
+          console.log("oooo:" + err);
+        });
+    }
+  });*/
 
 /**
  * 查询所有医生详情
  */
-//DoctorList.getId()
-//  .then(function (ids) {
-//    //var ids2 = JSON.parse(JSON.stringify(ids));
-//    var idsArr = _.pluck(ids, 'id');
-//    console.log("##### " + idsArr);
-//    for (var i = 0; i < idsArr.length; i++) {
-//      var id = idsArr[i];
-//      Doctor.getDoctorInfoByDoctorId(id)
-//        .then(function(data){
-//          console.log("Finish get data.");
-//          return Doctor.parseAndStore(data);
-//        })
-//        .then(function(){
-//          console.log("Finish parse and store data.");
-//        },function(err){
-//          console.log("oooo:" + err);
-//        });
-//
-//    }
-//  });
+/*DoctorList.getId()
+  .then(function (ids) {
+    //var ids2 = JSON.parse(JSON.stringify(ids));
+    var idsArr = _.pluck(ids, 'id');
+    console.log("##### " + idsArr);
+    for (var i = 0; i < idsArr.length; i++) {
+      var id = idsArr[i];
+      Doctor.getDoctorInfoByDoctorId(id)
+        .then(function(data){
+          console.log("Finish get data.");
+          return Doctor.parseAndStore(data);
+        })
+        .then(function(){
+          console.log("Finish parse and store data.");
+        },function(err){
+          console.log("!!!!!! Error:oooo:" + err);
+        });
+
+    }
+  });*/
 
 /**
  * 关联所有科室的医院_id
@@ -277,3 +259,41 @@ console.log("测试fork-pull合并代码");
 //function sleep(sleepTime) {
 //  for(var start = Date.now(); Date.now() - start <= sleepTime; ) { }
 //}
+
+/**
+ * 查询并存储二级科室列表
+ */
+/*var keys = HDF.FACULTY_KEYS;
+for(var key in keys){
+  Faculty.getDiseaseFacultyListByFacultyKey(key)
+    .then(function(data){
+      console.log("Finish get data.");
+      return Faculty.parseAndStore(data.data,data.key);
+    })
+    .then(function(){
+      console.log("Finish parse and store data.");
+    },function(err){
+      console.log("oooo:" + err);
+    });
+};*/
+
+/**
+ * 通过疾病二级科室编号获取疾病列表 + 科室ID
+ */
+SubFaculty.find({},{id:1}).exec().then(function(ids){
+  console.log("ids.length:"+ids.length);
+  for(var id in ids){
+    console.log(ids[id].id);
+    DiseaseController.getDiseaseListByFacultyId(ids[id].id)
+      .then(function(data){
+        console.log("Finish get data.");
+        return DiseaseController.parseAndStore(data.data,data.id);
+      })
+      .then(function(){
+        console.log("Finish parse and store data.");
+      },function(err){
+        console.log("oooo:" + err);
+      });
+  };
+});
+
