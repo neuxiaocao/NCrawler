@@ -52,7 +52,7 @@ exports.getDoctorInfoByDoctorId = function (doctorId) {
     function (error, response, body) {
       console.log("statusCode" + response.statusCode);
       if (error) {
-        console.log(error);
+        console.log("!!!!!! Req Error:" + error);
         deferred.resolve('');
       }
       deferred.resolve(body);
@@ -92,7 +92,7 @@ exports.parseAndStore = function (json) {
       deferred.resolve(result);
       return deferred.promise;
     }, function (err) {
-      console.log("Create error: " + err);
+      console.log("!!!!!!Create error: " + err);
       deferred.reject(err);
       return deferred.promise;
     });

@@ -1,38 +1,26 @@
 /**
- *
- *  NCrawler
- *  Created by Jacky.L on 1/12/15.
- *  Copyright (c) 2014 ZLYCare. All rights reserved.
+ * Created by Administrator on 2015/1/30.
  */
+
 var
   HDF = require("../configs/hdf"),
   request = require('request'),
   Q = require("q"),
+  util = require("util"),
   _ = require('underscore'),
-  DoctorList = require('../models/DoctorList');
-
-var
-  pageSize = 1000, //每一页获取的数据
-  pageId = 1;
+  Disease = require('../models/Disease');
 
 /**
- * 查询某个医院科室医生列表
- *
- * @param departmentId  科室id
- *
+ * 通过疾病二级科室编号获取疾病列表 + 科室ID
+ * @param key
+ * @returns {adapter.deferred.promise|*|promise|Q.promise}
  */
-exports.getDoctorListByDepartmentId = function (departmentId) {
-  console.log("Begin getDoctorListByDepartmentId");
-
-  if (departmentId == undefined) {//TODO 测试下，是否可以当id为undefined时返回所有科室医生信息？
-    return;
-  }
-
+exports.getDiseaseListByFacultyId = function(id){
   var deferred = Q.defer();
-  var path = HDF.getDoctorListByDepartmentId;
+  var path = HDF.getDiseaseListByFacultyId;
   var queryString =
     _.reduce(
-      _.map(_.extend(HDF.query, {pageSize: pageSize, hospitalFacultyId: departmentId, pageId: pageId}),
+      _.map(_.extend(HDF.query, {facultyId: id}),
         function (value, key) {
           return key + "=" + value;
         }),
@@ -40,22 +28,22 @@ exports.getDoctorListByDepartmentId = function (departmentId) {
         return memo + "&" + value;
       });
   var url = HDF.host + path + queryString;
-
   console.log("QueryString: " + url);
 
   request(
     {
-      method: 'GET'
+      method:"GET"
       , uri: url
       , gzip: true
     },
+
     function (error, response, body) {
       console.log("statusCode" + response.statusCode);
       if (error) {
         console.log("!!!!!ReqError: "+error);
         deferred.resolve('');
       }
-      deferred.resolve(body);
+      deferred.resolve({data:body,id:id});
     })
     .on('data', function (data) {
       // decompressed data as it is received
@@ -65,16 +53,12 @@ exports.getDoctorListByDepartmentId = function (departmentId) {
   return deferred.promise;
 };
 
-exports.getId = function () {
-  return DoctorList.find({}, "-_id id").exec();
-};
-
 /**
  * 解析并存储JSON数据
  * @param json
  * @returns {*}
  */
-exports.parseAndStore = function (json, departmentId) {
+exports.parseAndStore = function (json,id) {
   console.log("Begin data parse and store function. " + json.length);
 
   var deferred = Q.defer();
@@ -83,12 +67,12 @@ exports.parseAndStore = function (json, departmentId) {
   console.log("content:" + content.length);
   if (content.length > 0) {
     for (var i = 0; i < content.length; i++) {
-      _.extend(content[i], {departmentId: departmentId});
+      _.extend(content[i],{id:id});
     }
 
     console.log("---" + content[0]);
 
-    return DoctorList.create(content)
+    return Disease.create(content)
       .then(function (result) {
         //console.log("Create success: " + result);
         deferred.resolve(result);
@@ -104,4 +88,5 @@ exports.parseAndStore = function (json, departmentId) {
     return deferred.promise;
   }
 };
+
 
