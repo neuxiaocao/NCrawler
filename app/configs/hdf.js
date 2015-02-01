@@ -85,3 +85,4 @@ module.exports = {
   //http://mobile-api.haodf.com/mobileapi/getDoctorListByDiseaseKey?os=android&app=haodf&v=3.1.1&api=1.2&vd=tc&deviceToken=862230024321994&province=%E5%8C%97%E4%BA%AC&pageSize=10&pageId=1&diseaseKey=baixuebing
   getDoctorListByDiseaseKey: 'mobileapi/getDoctorListByDiseaseKey?'
 };
+
