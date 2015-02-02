@@ -8,8 +8,86 @@ var
   Q = require("q"),
   util = require("util"),
   _ = require('underscore'),
+  Disease = require('../models/Disease'),
   Faculty = require('../models/Faculty'),
   SubFaculty = require('../models/SubFaculty');
+
+/**
+ * 初始化疾病一级科室
+ * @param json
+ * @returns {faculties}
+ */
+exports.initFaculty = function (json) {
+
+  var faculties = [];
+  var faculty;
+  for (var key in json){
+    console.log("key : " + key + " value : " + json[key]);
+    faculty = {
+      key : key,
+      name: json[key]
+    };
+    faculties.push(faculty);
+  }
+  return Faculty.create(faculties);
+};
+/**
+ *
+ */
+exports.connectFacultyWithSub = function () {
+  //var faculties , subs;
+  Faculty.find({},"key name").exec()
+    .then(function(faculties){
+      var count = faculties.length;
+      console.log("Faculties length : " + count);
+      for (var i = 0 ; i < count ; i++){
+        var key = faculties[i].key;
+        var updates = {
+          facultyId: faculties[i]._id,
+          facultyName: faculties[i].name
+        };
+        console.log("Key : " + key + " ; Updates : " + util.inspect(updates) );
+        SubFaculty.update({key:key},updates,{multi: true}).exec()
+          .then(function(){
+            console.log("update Ok  ");
+          }, function(err){
+            console.log("!!!!!!!Error 1: " + err);
+          });
+      }
+    }, function(err){
+      console.log("!!!!!!!Error 2: " + err);
+    });
+};
+
+/**
+ *
+ */
+exports.connectFacSubWithDis = function () {
+  //
+
+  SubFaculty.find({}, "facultyId facultyKey facultyName id name").exec()
+    .then(function(list){
+      var count = list.length;
+      console.log("SubFaculty length : " + count);
+      for (var i = 0; i < count ; i++) {
+        var hdfID = list[i].id;
+        var updates = {
+          facultyId:      list[i].facultyId,
+          facultyKey:     list[i].facultyKey,
+          facultyName:    list[i].facultyName,
+          subFacultyId:   list[i]._id,
+          subFacultyName: list[i].name
+        };
+        console.log("ID : " + hdfID + " ; Updates : " + util.inspect(updates) );
+        Disease.update({id: hdfID}, updates, {multi: true}).exec()
+          .then(function(){
+            console.log("update Ok  ");
+          }, function(err){
+            console.log("!!!!!!!Error 1: " + err);
+          });
+      }
+    });
+};
 
 /**
  * 通过疾病一级科室key获取疾病二级科室列表

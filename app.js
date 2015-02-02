@@ -17,10 +17,15 @@ var
   SubFaculty = require('./app/models/SubFaculty'),
   HDF = require("./app/configs/hdf"),
   DiseaseController= require('./app/controllers/DiseaseController.js');
-console.log("测试fork-pull合并代码");
+
+console.log("Crawler Begin Working....");
+
+////////////////////////////////////////////////////////////////////////
+//////////////////////// 基础数据抓取 /////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
 
 /**
-* 查询并存储北京所有的医院
+* 1. 查询并存储北京所有的医院  Hospital
 */
 //Hospital.getHospitalListByProvince()
 //  .then(function(data){
@@ -34,7 +39,7 @@ console.log("测试fork-pull合并代码");
 //  });
 
 /**
- * 获取所有医院科室
+ * 2. 获取所有医院科室  Department
  */
 /*Hospital.getHospitalId()
   .then(function (ids) {
@@ -59,7 +64,7 @@ console.log("测试fork-pull合并代码");
   */
 
 /**
- * 查询所有医生列表详情
+ * 3. 查询所有科室医生列表--医生基本信息  DoctorList
  */
 /*Department.getDepartmentId()
   .then(function (ids) {
@@ -81,7 +86,7 @@ console.log("测试fork-pull合并代码");
   });*/
 
 /**
- * 查询所有医生详情
+ * 4. 查询所有医生详情   Doctor
  */
 /*DoctorList.getId()
   .then(function (ids) {
@@ -105,7 +110,91 @@ console.log("测试fork-pull合并代码");
   });*/
 
 /**
- * 关联所有科室的医院_id
+ * 5. 查询并存储疾病二级科室列表 SubFaculty
+ */
+/*
+var keys = HDF.FACULTY_KEYS;//疾病以及科室名已经存为常量
+//console.log("keys: "+keys);
+for(var key in keys){//遍历所有key值
+  console.log("key:"+ key);
+  Faculty.getDiseaseFacultyListByFacultyKey(key)
+    .then(function(data){
+      console.log("Finish get data.");
+      return Faculty.parseAndStore(data.data,data.key);
+    })
+    .then(function(){
+      console.log("Finish parse and store data.");
+    },function(err){
+      console.log("oooo:" + err);
+    });
+};*/
+
+/**
+ * 6. 通过疾病二级科室编号获取疾病列表 + 科室ID  Disease
+ */
+//SubFaculty.find({},{id:1}).exec().then(function(ids){
+//  console.log("ids.length:"+ids.length);
+//  for(var id in ids){
+//    console.log(ids[id].id);
+//    DiseaseController.getDiseaseListByFacultyId(ids[id].id)
+//      .then(function(data){
+//        console.log("Finish get data.");
+//        return DiseaseController.parseAndStore(data.data,data.id);
+//      })
+//      .then(function(){
+//        console.log("Finish parse and store data.");
+//      },function(err){
+//        console.log("oooo:" + err);
+//      });
+//  };
+//});
+
+
+////////////////////////////////////////////////////////////////////////
+//////////////////////// 关系数据抓取、整理 ///////////////////////////////
+////////////////////////////////////////////////////////////////////////
+
+
+/**
+ * 初始化疾病一级科室
+ */
+//Faculty.initFaculty(HDF.FACULTY_KEYS)
+//  .then(function(){
+//    console.log("Success init");
+//  }, function(err){
+//    console.log("!!!!!!Err init : " + err);
+//  });
+/**
+ * 关联疾病一级科室 与 二级科室, 批量更新二级科室
+ */
+//Faculty.connectFacultyWithSub();
+//Format batch
+//db.subfaculties.find({}).forEach(function(d){
+//  var key = d.key;
+//  d.facultyKey = key;
+//  db.subfaculties.save(d);
+//})
+/**
+ * 关联疾病一级科室、二级科室 与 疾病
+ */
+Faculty.connectFacSubWithDis();
+/**
+ * 关联疾病一级科室、二级科室、疾病 与 医生 更新医生列表 (关系)
+ */
+
+/**
+ * 通过疾病名key获取 医生列表 更新医生列表 (关系)
+ */
+//遍历疾病名 获取医生列表 更新现有医生关联的key
+
+
+
+
+
+
+
+/**
+ * 更新所有科室数据,关联到对应的医院_id
  */
 //Hospital.getHospitalId()
 //  .then(function (ids) {
@@ -125,7 +214,7 @@ console.log("测试fork-pull合并代码");
 //  });
 
 /**
- * 关联所有医生的 hospitalId
+ * 更新所有医生详情数据,关联到有医生的 hospitalId
  */
 //Hospital.getHospitalId()
 //  .then(function (ids) {
@@ -144,8 +233,9 @@ console.log("测试fork-pull合并代码");
 //    }
 //  });
 
+
 /**
- * 关联所有医生的 hospitalFacultyId
+ * 更新医生信息,关联医生的 hospitalFacultyId，将hdf的id替换为MongoId
  */
 //Department.getDepartmentId()
 //  .then(function (ids) {
@@ -163,10 +253,6 @@ console.log("测试fork-pull合并代码");
 //        });
 //    }
 //  });
-
-//createSupplier();
-//createHptIndex();
-//createDpmIndex();
 
 //function createSupplier(){
 //  Doctor.find({})
@@ -260,40 +346,6 @@ console.log("测试fork-pull合并代码");
 //  for(var start = Date.now(); Date.now() - start <= sleepTime; ) { }
 //}
 
-/**
- * 查询并存储二级科室列表
- */
-/*var keys = HDF.FACULTY_KEYS;
-for(var key in keys){
-  Faculty.getDiseaseFacultyListByFacultyKey(key)
-    .then(function(data){
-      console.log("Finish get data.");
-      return Faculty.parseAndStore(data.data,data.key);
-    })
-    .then(function(){
-      console.log("Finish parse and store data.");
-    },function(err){
-      console.log("oooo:" + err);
-    });
-};*/
-
-/**
- * 通过疾病二级科室编号获取疾病列表 + 科室ID
- */
-SubFaculty.find({},{id:1}).exec().then(function(ids){
-  console.log("ids.length:"+ids.length);
-  for(var id in ids){
-    console.log(ids[id].id);
-    DiseaseController.getDiseaseListByFacultyId(ids[id].id)
-      .then(function(data){
-        console.log("Finish get data.");
-        return DiseaseController.parseAndStore(data.data,data.id);
-      })
-      .then(function(){
-        console.log("Finish parse and store data.");
-      },function(err){
-        console.log("oooo:" + err);
-      });
-  };
-});
-
+//createSupplier();
+//createHptIndex();
+//createDpmIndex();

@@ -14,9 +14,14 @@ var
 var SubFacultySchema = new Schema({
   // 基本属性
   sourceType: {type: String, default: 'hdf'},//hdf - 来源好大夫
-  id: {type: String, unique: true}, //内部编号
-  key: {type: String,default:""}, //索引键
+
+  facultyId: {type: String, default: ""},//一级疾病索引uuid
+  facultyKey: {type: String, default:""}, //一级疾病索引键
+  facultyName: {type: String, default: ""},//一级疾病科室名
+
+  id: {type: String, unique: true}, //hdf内部编号
   name:{type: String, default:"" },//二级科室名
+
   createdAt: {type: Number, default: Date.now},//用户注册时间
   updatedAt: {type: Number, default: Date.now},//用户最近的更新时间
   isDeleted: {type: Boolean, default: false}//该条记录是否被删除
