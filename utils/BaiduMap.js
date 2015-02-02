@@ -47,7 +47,7 @@ setInterval(function(){
         gps: gpsArray
         };
         var fields = {
-        name:name
+        name:hosArrys[i]
         };
 
         Hospital.findOneAndUpdate(fields,con).exec().then(function(){

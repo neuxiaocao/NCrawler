@@ -15,14 +15,14 @@ var DiseaseSchema = new Schema({
   // 基本属性
   sourceType: {type: String, default: 'hdf'},//hdf - 来源好大夫
 
-  facultyId:{type:String, default:""},//二级科室ID
+  facultyId:{type:String, default:""},//一级科室ID
   facultyName: {type: String, default: ""},//一级科室名称
   facultyKey: {type: String, default: ""},//一级科室key
 
   subFacultyId: {type:String, default: ""},//二级科室索引Id
   subFacultyName: {type:String, default: ""},//二级科室索引名
 
-  id: {type: String, default: ''},//疾病二级科室的hdf ID
+  //id: {type: String, default: ''},//疾病二级科室的hdf ID
 
   key:{type:String, default:""},//疾病key
   name:{type:String, default:""},//病名

@@ -9,7 +9,8 @@ var
   request = require('request'),
   Q = require("q"),
   _ = require('underscore'),
-  Doctor = require('../models/Doctor');
+  Doctor = require('../models/Doctor'),
+  Disease = require('../models/Disease');
 
 var
   pageSize = 1000, //每一页获取的数据
@@ -100,4 +101,45 @@ exports.parseAndStore = function (json) {
 
 exports.find = function (con){
   return Doctor.find(con).exec();
+};
+
+exports.getDoctorListByDiseaseKey = function (key, relation) {
+  var deferred = Q.defer();
+  var path = HDF.getDoctorListByDiseaseKey;
+  var queryString =
+    _.reduce(
+      _.map(_.extend(HDF.query, {diseaseKey: key,pageSize:10000, pageId:1,province:'北京'}),
+        function (value, key) {
+          return key + "=" + value;
+        }),
+      function (memo, value) {
+        return memo + "&" + value;
+      });
+  var url = HDF.host + path + queryString;
+
+  console.log("QueryString: " + url);
+  request(
+    {
+      method: 'GET'
+      , uri: url
+      , gzip: true
+    },
+    function (error, response, body) {
+      console.log("statusCode" + response.statusCode);
+      if (error) {
+        console.log("!!!!!! Req Error:" + error);
+        deferred.resolve('');
+      }
+      deferred.resolve({data:body, relation: relation});
+    });
+
+  return deferred.promise;
+};
+/**
+ *
+ * @param list
+ * @returns {list}
+ */
+exports.create = function (list) {
+  return Doctor.create(list);
 };

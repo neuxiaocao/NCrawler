@@ -10,6 +10,35 @@ var
   _ = require('underscore'),
   Disease = require('../models/Disease');
 
+exports.connectIndexWithDoctor = function (id) {
+  //
+  Disease.find({}, "facultyId facultyKey facultyName subFacultyId subFacultyName " +
+    " key name").exec()
+    .then(function(list){
+      var count = list.length;
+      console.log("Disease length : " + count);
+      for (var i = 0; i < count ; i++) {
+        var key = list[i].key;
+        var updates = {
+          facultyId:      list[i].facultyId,
+          facultyKey:     list[i].facultyKey,
+          facultyName:    list[i].facultyName,
+          subFacultyId:   list[i].subFacultyId,
+          subFacultyName: list[i].subFacultyName,
+          diseaseId: list[i]._id,
+          diseaseKey: list[i].key,
+          diseaseName: list[i].name
+        };
+        console.log("ID : " + key + " ; Updates : " + util.inspect(updates) );
+        Doctor.update({id: key}, updates, {multi: true}).exec()
+          .then(function(){
+            console.log("update Ok  ");
+          }, function(err){
+            console.log("!!!!!!!Error 1: " + err);
+          });
+      }
+    });
+};
 /**
  * 通过疾病二级科室编号获取疾病列表 + 科室ID
  * @param key
@@ -88,5 +117,10 @@ exports.parseAndStore = function (json,id) {
     return deferred.promise;
   }
 };
-
-
+/**
+ *
+ */
+exports.getDiseaseList = function(){
+  console.log("begin get list");
+  return Disease.find().exec();
+};

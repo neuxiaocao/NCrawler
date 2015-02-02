@@ -13,8 +13,22 @@ var
 var aSchema = new Schema({
   // 基本属性
   sourceType: {type: String, default: 'hdf'},//hdf - 来源好大夫
-  type: {type: Number, default: 0},//0-默认医生; 1-医院; 2-体检机构; 3-药店; 4-诊所
-  id: {type: String, unique: true}, //内部编号
+  type: {type: Number, default: 0},//0-默认医生; 1-医院; 2-体检机构; 3-药店; 4-诊所s
+  func: {type: Number, default: 0},//0-医生的Profile：1-索引关系
+  //疾病一级科室
+  facultyId:{type:String, default:""},//一级科室ID
+  facultyName: {type: String, default: ""},//一级科室名称
+  facultyKey: {type: String, default: ""},//一级科室key
+  //疾病二级科室
+  subFacultyId: {type:String, default: ""},//二级科室索引UID
+  subFacultyName: {type:String, default: ""},//二级科室索引名
+  //疾病
+  diseaseId: {type:String, default: ""},//疾病索引UUID
+  diseaseKey: {type:String, default:""},
+  diseaseName: {type:String, default:""},
+
+
+  id: {type: String, unique: true}, //hdf内部编号
   doctorId: String, //医生id
   newCaseIntro: String, //最新接诊介绍
   doctorCommentCnt: String,

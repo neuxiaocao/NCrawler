@@ -177,10 +177,63 @@ for(var key in keys){//遍历所有key值
 /**
  * 关联疾病一级科室、二级科室 与 疾病
  */
-Faculty.connectFacSubWithDis();
+//Faculty.connectFacSubWithDis();
 /**
  * 关联疾病一级科室、二级科室、疾病 与 医生 更新医生列表 (关系)
  */
+DiseaseController.getDiseaseList()
+  .then(function(list){
+    console.log("Finish get disease list")
+    list = [
+      {
+        "_id" : "54cb922a89b657a815623b04",
+        "brief" : "常见疾病",
+        "createdAt" : 1422627370110,
+        "diseaseDoctorCount" : "373",
+        "facultyId" : "54ced9fd56f7aea71687b29f",
+        "facultyKey" : "xiaoerke",
+        "facultyName" : "小儿科",
+        "id" : "3010000",
+        "isDeleted" : false,
+        "key" : "aixiaozheng",
+        "name" : "矮小症",
+        "sourceType" : "hdf",
+        "spaceDoctorCount" : "266",
+        "subFacultyId" : "54cb89c692e3aa2c031e869b",
+        "subFacultyName" : "小儿营养保健科",
+        "updatedAt" : 1422627370110
+      }
+    ];
+    console.log("length: " + list.length);
+    for (var data in list){
+      console.log("********"+data);
+      var key = list[data].key;
+      var relation = {
+        func: 1,
+        facultyId: list[data].facultyId,
+        facultyName: list[data].facultyName,
+        facultyKey: list[data].facultyKey,
+        subFacultyId: list[data].subFacultyId,
+        subFacultyName: list[data].subFacultyName,
+        diseaseId: list[data]._id,
+        diseaseKey: key,
+        diseaseName: list[data].name
+      };
+      Doctor.getDoctorListByDiseaseKey(key, relation)
+        .then(function (result){
+          var doctorList = result.data;
+          var relation = result.realtion;
+          var relationList = [];
+          for (var doctor in doctorList) {
+            var hdfID = doctorList[doctor].id;
+            var newRel = _.extend(relation, {doctorId: hdfID});
+            relationList.push(newRel);
+          }
+          console.log("==========================data: " + util.inspect(relationList));
+          //return Doctor.create(realtionList);
+        });
+    }
+  });
 
 /**
  * 通过疾病名key获取 医生列表 更新医生列表 (关系)
@@ -200,7 +253,8 @@ Faculty.connectFacSubWithDis();
 //  .then(function (ids) {
 //    //var ids2 = JSON.parse(JSON.stringify(ids));
 //    //var idsArr = _.pluck(ids, 'id');
-//    //console.log("##### " + idsArr);
+//    //console.log("#####
+// " + idsArr);
 //    for (var i = 0; i < ids.length; i++) {
 //      var hs = ids[i];
 //
