@@ -212,6 +212,7 @@ DiseaseController.getDiseaseList()
           var hdfID;
           for (var index in doctorList){
             hdfID = doctorList[index].id;
+            console.log( index + " : id : " + hdfID);
             relationList.push(_.extend(relation, {doctorId: hdfID}));
           }
           console.log("==========================data: " + util.inspect(relationList));
