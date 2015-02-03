@@ -209,11 +209,10 @@ DiseaseController.getDiseaseList()
           var doctorList = (JSON.parse(result.data)).content;
           var relation = result.relation;
           var relationList = [];
-          var hdfID, newRel;
+          var hdfID;
           for (var index in doctorList){
             hdfID = doctorList[index].id;
-            newRel = _.extend(relation, {doctorId: hdfID});
-            relationList.push(newRel);
+            relationList.push(_.extend(relation, {doctorId: hdfID}));
           }
           console.log("==========================data: " + util.inspect(relationList));
           return Doctor.create(relationList);
