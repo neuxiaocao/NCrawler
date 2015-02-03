@@ -6,13 +6,14 @@
  *  Copyright (c) 2014 ZLYCare. All rights reserved.
  */
 var
-  Hospital = require('./app/controllers/HospitalController');
+  Hospital = require('./app/controllers/HospitalController'),
   _ = require('underscore'),
+  util = require('util'),
   DoctorList = require('./app/controllers/DoctorListController'),
   Supplier = require('./app/controllers/SupplierController'),
   Doctor = require('./app/controllers/DoctorController'),
   Index = require('./app/models/Index'),
-  Department = require('./app/controllers/DepartmentController');
+  Department = require('./app/controllers/DepartmentController'),
   Faculty = require('./app/controllers/FacultyController'),
   SubFaculty = require('./app/models/SubFaculty'),
   HDF = require("./app/configs/hdf"),
