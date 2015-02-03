@@ -125,12 +125,14 @@ exports.getDoctorListByDiseaseKey = function (key, relation) {
       , gzip: true
     },
     function (error, response, body) {
-      console.log("statusCode" + response.statusCode);
-      if (error) {
+
+      if (error || !response) {
         console.log("!!!!!! Req Error:" + error);
-        deferred.resolve('');
+        deferred.reject(error);
+      }else {
+        console.log("statusCode" + response.statusCode);
+        deferred.resolve({data:body, relation: relation});
       }
-      deferred.resolve({data:body, relation: relation});
     });
 
   return deferred.promise;
@@ -142,4 +144,11 @@ exports.getDoctorListByDiseaseKey = function (key, relation) {
  */
 exports.create = function (list) {
   return Doctor.create(list);
+};
+
+/**
+ *
+ */
+exports.changeHdfId2DocMongoId = function () {
+
 };

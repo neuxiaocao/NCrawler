@@ -156,7 +156,7 @@ for(var key in keys){//遍历所有key值
 
 
 /**
- * 初始化疾病一级科室
+ * 7. 初始化疾病一级科室
  */
 //Faculty.initFaculty(HDF.FACULTY_KEYS)
 //  .then(function(){
@@ -165,7 +165,7 @@ for(var key in keys){//遍历所有key值
 //    console.log("!!!!!!Err init : " + err);
 //  });
 /**
- * 关联疾病一级科室 与 二级科室, 批量更新二级科室
+ * 8. 关联疾病一级科室 与 二级科室, 批量更新二级科室
  */
 //Faculty.connectFacultyWithSub();
 //Format batch
@@ -175,37 +175,20 @@ for(var key in keys){//遍历所有key值
 //  db.subfaculties.save(d);
 //})
 /**
- * 关联疾病一级科室、二级科室 与 疾病
+ * 9. 关联疾病一级科室、二级科室 与 疾病
  */
 //Faculty.connectFacSubWithDis();
 /**
- * 关联疾病一级科室、二级科室、疾病 与 医生 更新医生列表 (关系)
+ * 10. 关联疾病一级科室、二级科室、疾病 与 医生 更新医生列表 (关系)
  */
 DiseaseController.getDiseaseList()
   .then(function(list){
-    console.log("Finish get disease list")
-    list = [
-      {
-        "_id" : "54cb922a89b657a815623b04",
-        "brief" : "常见疾病",
-        "createdAt" : 1422627370110,
-        "diseaseDoctorCount" : "373",
-        "facultyId" : "54ced9fd56f7aea71687b29f",
-        "facultyKey" : "xiaoerke",
-        "facultyName" : "小儿科",
-        "id" : "3010000",
-        "isDeleted" : false,
-        "key" : "aixiaozheng",
-        "name" : "矮小症",
-        "sourceType" : "hdf",
-        "spaceDoctorCount" : "266",
-        "subFacultyId" : "54cb89c692e3aa2c031e869b",
-        "subFacultyName" : "小儿营养保健科",
-        "updatedAt" : 1422627370110
-      }
-    ];
+    //console.log("Finish get disease list")
     console.log("length: " + list.length);
-    for (var data in list){
+    //for (var data in list){
+    var data = -1;
+    setInterval(function(){
+      data++;
       console.log("********"+data);
       var key = list[data].key;
       var relation = {
@@ -221,23 +204,32 @@ DiseaseController.getDiseaseList()
       };
       Doctor.getDoctorListByDiseaseKey(key, relation)
         .then(function (result){
-          var doctorList = result.data;
-          var relation = result.realtion;
+          //console.log("Result return!");
+          var doctorList = (JSON.parse(result.data)).content;
+          var relation = result.relation;
           var relationList = [];
-          for (var doctor in doctorList) {
-            var hdfID = doctorList[doctor].id;
+          for (var index in doctorList){
+            var hdfID = doctorList[index].id;
             var newRel = _.extend(relation, {doctorId: hdfID});
             relationList.push(newRel);
           }
           console.log("==========================data: " + util.inspect(relationList));
-          //return Doctor.create(realtionList);
+          return Doctor.create(relationList);
+        })
+        .then(function(){
+          console.log("Create Success");
+        }, function(err){
+          console.log("!!!!!!Err: " + err);
         });
-    }
+    },5000);
+    //}
   });
 
 /**
- * 通过疾病名key获取 医生列表 更新医生列表 (关系)
+ * 11. update医生表，更新医生索引关系记录
+ *  表内聚合命令
  */
+//Doctor.changeHdfId2DocMongoId();
 //遍历疾病名 获取医生列表 更新现有医生关联的key
 
 
