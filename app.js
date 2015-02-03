@@ -205,13 +205,14 @@ DiseaseController.getDiseaseList()
       };
       Doctor.getDoctorListByDiseaseKey(key, relation)
         .then(function (result){
-          //console.log("Result return!");
+          console.log("Result return! " + util.inspect(result) );
           var doctorList = (JSON.parse(result.data)).content;
           var relation = result.relation;
           var relationList = [];
+          var hdfID, newRel;
           for (var index in doctorList){
-            var hdfID = doctorList[index].id;
-            var newRel = _.extend(relation, {doctorId: hdfID});
+            hdfID = doctorList[index].id;
+            newRel = _.extend(relation, {doctorId: hdfID});
             relationList.push(newRel);
           }
           console.log("==========================data: " + util.inspect(relationList));
