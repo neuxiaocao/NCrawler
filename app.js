@@ -205,19 +205,19 @@ DiseaseController.getDiseaseList()
       };
       Doctor.getDoctorListByDiseaseKey(key, relation)
         .then(function (result){
-          console.log("Result return! " + util.inspect(result) );
+          //console.log("Result return! " + util.inspect(result) );
           var doctorList = (JSON.parse(result.data)).content;
           var relation = result.relation;
           var relationList = [];
           var hdfID;
           for (var index in doctorList){
             hdfID = doctorList[index].id;
-            console.log( index + " : id : " + hdfID);
+            //console.log( index + " : id : " + hdfID);
             relationList.push(
               _.extend(
                 _.clone(relation), {doctorId: hdfID}));
           }
-          console.log("==========================data: " + util.inspect(relationList));
+          //console.log("==========================data: " + util.inspect(relationList));
           return Doctor.create(relationList);
         })
         .then(function(){
@@ -225,7 +225,7 @@ DiseaseController.getDiseaseList()
         }, function(err){
           console.log("!!!!!!Err: " + err);
         });
-    },5000);
+    },3000);
     //}
   });
 
