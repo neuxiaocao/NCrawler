@@ -7,6 +7,7 @@
 var
   HDF = require("../configs/hdf"),
   request = require('request'),
+  util = require("util"),
   Q = require("q"),
   _ = require('underscore'),
   Doctor = require('../models/Doctor'),
