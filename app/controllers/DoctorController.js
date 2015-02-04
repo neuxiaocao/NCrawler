@@ -153,3 +153,16 @@ exports.create = function (list) {
 exports.changeHdfId2DocMongoId = function () {
 
 };
+/**
+ *
+ * @param conds
+ * @param fields
+ * @returns {Promise|Array|{index: number, input: string}}
+ */
+exports.getDoctorInfo = function (conds,fields) {
+  return Doctor.find(conds,fields).exec();
+};
+
+exports.updateDoctor = function (conds, updates) {
+  return Doctor.update(conds, updates, {multi: true}).exec();
+};

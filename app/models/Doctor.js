@@ -30,6 +30,9 @@ var aSchema = new Schema({
   province: String,
   hospitalId: String, //医院ID
   hospitalName: String,
+  departmentId: String,
+  departmentName: String,
+
   hospitalFacultyId: String,
   hospitalFacultyName: String,//科室
   hospitalFacultyFullName: String,//医院科室全称

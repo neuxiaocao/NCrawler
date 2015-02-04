@@ -255,73 +255,95 @@ for(var key in keys){//遍历所有key值
  * 13. 关联医院-科室
  *     更新所有科室数据,关联到对应的医院_id
  */
-Hospital.getHospitalId()
-  .then(function (data) {
+//Hospital.getHospitalId()
+//  .then(function (data) {
+//    var list = JSON.parse(JSON.stringify(data));
+//    //var idsArr = _.pluck(ids, 'id');
+//    console.log("#####" + list.length);
+//    for (var i = 0; i < list.length; i++) {
+//      var hs = list[i];
+//      var updates = {
+//        provinceId: hs.provinceId,
+//        provinceName: hs.province,
+//        hospitalId: hs._id,
+//        hospitalName: hs.name
+//      };
+//      console.log(util.inspect(updates));
+//      Department.getDepartmentListByHospitalIdAndUpdate(hs.id, updates)
+//        .then(function (data) {
+//          console.log("Finish get data.");
+//        }, function (err) {
+//          console.log("oooo:" + err);
+//        });
+//    }
+//  });
+
+//
+// 更新医院信息
+//db.hospitals.update(
+//  {province:"北京"},
+//  {$set: {provinceId: "54b8bbd551f77c2d2a029402"}},
+//  {multi:true});
+
+//
+// 更新医生关系信息
+//db.doctors.update(
+//  {func:0},
+//  {$set: {func:2, provinceId: "54b8bbd551f77c2d2a029402", provinceName:"北京"}},
+//  {multi:true});
+//
+
+
+/**
+ * 通过hdf的id关联地点科室与DoctorRelation
+ */
+Department.getDepartmentId()
+  .then(function(data){
     var list = JSON.parse(JSON.stringify(data));
-    //var idsArr = _.pluck(ids, 'id');
     console.log("#####" + list.length);
     for (var i = 0; i < list.length; i++) {
       var hs = list[i];
       var updates = {
-        provinceId: hs.provinceId,
-        provinceName: hs.province,
-        hospitalId: hs._id,
-        hospitalName: hs.name
+        //provinceId: hs.provinceId,
+        //provinceName: hs.province,
+        hospitalId: hs.hospitalId,
+        hospitalName: hs.hospitalName,
+        departmentId: hs._id,
+        departmentName: hs.name
       };
-      console.log(util.inspect(updates));
-      Department.getDepartmentListByHospitalIdAndUpdate(hs.id, updates)
-        .then(function (data) {
-          console.log("Finish get data.");
-        }, function (err) {
-          console.log("oooo:" + err);
-        });
+      console.log("Update doctor: " + util.inspect(updates));
+      Doctor.updateDoctor({func: 2, hospitalFacultyId: hs.id}, updates);
     }
+
   });
 
+/**
+ * 提取 地点索引 与 医生的关系， 并在doctor中单独存储
+ */
+//var conds   = {func : 0};
+//var fields  = "id name hospitalFacultyId hospitalFacultyName hospitalFacultyFullName " +
+//  " hospitalId hospitalName";
+//Doctor.getDoctorInfo(conds, fields)
+//  .then(function(data){
+//    var list = JSON.parse(JSON.stringify(data));
+//    var relations = [];
+//    var relation;
+//    console.log("Length : " + list.length);
+//    for (var i = 0; i < 10 ; i++){
+//      relation = list[i];
+//      delete relation._id;
+//      relations.push(
+//        _.extend(
+//          _.clone(relation),
+//          {func: 2, provinceId: "54b8bbd551f77c2d2a029402", provinceName:"北京"}));
+//    }
+//    //console.log("Data : " + util.inspect(relations));
+//    Doctor.create(relations);
+//  });
 //Doctor.changeHdfId2DocMongoId();
 //遍历疾病名 获取医生列表 更新现有医生关联的key
 
 
-/**
- * 更新所有医生详情数据,关联到有医生的 hospitalId
- */
-//Hospital.getHospitalId()
-//  .then(function (ids) {
-//    //var ids2 = JSON.parse(JSON.stringify(ids));
-//    //var idsArr = _.pluck(ids, 'id');
-//    //console.log("##### " + idsArr);
-//    for (var i = 0; i < ids.length; i++) {
-//      var hs = ids[i];
-//
-//      Doctor.getDoctorByHospitalIdAndUpdate(hs.id, hs._id)
-//        .then(function (data) {
-//          console.log("Finish get data.");
-//        }, function (err) {
-//          console.log("oooo:" + err);
-//        });
-//    }
-//  });
-
-
-/**
- * 更新医生信息,关联医生的 hospitalFacultyId，将hdf的id替换为MongoId
- */
-//Department.getDepartmentId()
-//  .then(function (ids) {
-//    //var ids2 = JSON.parse(JSON.stringify(ids));
-//    //var idsArr = _.pluck(ids, 'id');
-//    //console.log("##### " + idsArr);
-//    for (var i = 0; i < ids.length; i++) {
-//      var hs = ids[i];
-//
-//      Doctor.getDoctorHospitalFacultyIdByAndUpdate(hs.id, hs._id)
-//        .then(function (data) {
-//          console.log("Finish get data.");
-//        }, function (err) {
-//          console.log("oooo:" + err);
-//        });
-//    }
-//  });
 
 //function createSupplier(){
 //  Doctor.find({})
