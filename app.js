@@ -454,10 +454,10 @@ Doctor.find({func: 2},
         doctorIntro: d.doctorIntro,
         logoUrl: d.logoUrl
       };
-      console.log(i + "update " + util.inspect(updates));
+      //console.log(i + "update " + util.inspect(updates));
       Doctor.updateDoctor(con, updates)
         .then(function(){
-          console.log("update success!");
+          //console.log("update success!");
         },function(err){
           console.log("!!!!!!!UpdateErr:"+err);
         });
