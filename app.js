@@ -457,7 +457,7 @@ Doctor.find({func: 2},
       //console.log(i + "update " + util.inspect(updates));
       Doctor.updateDoctor(con, updates)
         .then(function(){
-          //console.log("update success!");
+          console.log("update success!");
         },function(err){
           console.log("!!!!!!!UpdateErr:"+err);
         });
@@ -494,8 +494,13 @@ Doctor.find({func: 2},
 //        _.extend(
 //          _.clone(hos),{hdfId: hos.id, type:2}));
 //    }
-//    console.log("List: " + util.inspect(newList));
-//    Index.create(newList);
+//    //console.log("List: " + util.inspect(newList));
+//    return Index.create(newList);
+//  })
+//  .then(function(){
+//    console.log("Success")
+//  },function(err){
+//    console.log("!!!!!!!Err:"+err);
 //  });
 
 ///**
