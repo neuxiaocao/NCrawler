@@ -29,7 +29,7 @@ var aSchema = new Schema({
   needUserInfo: String,
   schedule: String,     //出诊时间描述
   isStrictComment: String,
-  doctorIntro: {type: String, unique: true},//医生简介
+  doctorIntro: {type: String, default: ""},//医生简介
   articleCount: String,
   caseCount: String,
   canVote: String,
@@ -40,6 +40,6 @@ var aSchema = new Schema({
   isDeleted: {type: Boolean, default: false}//该条记录是否被删除
 });
 
-var Model = mongodb.mongoose.model('Doctor', aSchema);
+var Model = mongodb.mongoose.model('Profile', aSchema);
 
 module.exports = Model;

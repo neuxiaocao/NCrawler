@@ -17,7 +17,8 @@ var
   Faculty = require('./app/controllers/FacultyController'),
   SubFaculty = require('./app/models/SubFaculty'),
   HDF = require("./app/configs/hdf"),
-  DiseaseController= require('./app/controllers/DiseaseController.js');
+  DiseaseController = require('./app/controllers/DiseaseController.js'),
+  ProfileController = require('./app/controllers/ProfileController.js');
 
 console.log("Crawler Begin Working....");
 
@@ -26,8 +27,8 @@ console.log("Crawler Begin Working....");
 ////////////////////////////////////////////////////////////////////////
 
 /**
-* 1. 查询并存储北京所有的医院  Hospital
-*/
+ * 1. 查询并存储北京所有的医院  Hospital
+ */
 //Hospital.getHospitalListByProvince()
 //  .then(function(data){
 //    console.log("Finish get data.");
@@ -43,92 +44,92 @@ console.log("Crawler Begin Working....");
  * 2. 获取所有医院科室  Department
  */
 /*Hospital.getHospitalId()
-  .then(function (ids) {
-    //var ids2 = JSON.parse(JSON.stringify(ids));
-    var idsArr = _.pluck(ids, 'id');
-    console.log("Hospital list ##### : " + idsArr);
-    for (var i = 0; i < idsArr.length; i++) {
-      var id = idsArr[i];
+ .then(function (ids) {
+ //var ids2 = JSON.parse(JSON.stringify(ids));
+ var idsArr = _.pluck(ids, 'id');
+ console.log("Hospital list ##### : " + idsArr);
+ for (var i = 0; i < idsArr.length; i++) {
+ var id = idsArr[i];
 
-      Department.getDepartmentListByHospitalId(id)
-        .then(function (data) {
-          console.log("Finish get data.");
-          return Department.parseAndStore(data, data.id);
-        })
-        .then(function () {
-          console.log("Finish parse and store data.");
-        }, function (err) {
-          console.log("oooo:" + err);
-        });
-    }
-  });
-  */
+ Department.getDepartmentListByHospitalId(id)
+ .then(function (data) {
+ console.log("Finish get data.");
+ return Department.parseAndStore(data, data.id);
+ })
+ .then(function () {
+ console.log("Finish parse and store data.");
+ }, function (err) {
+ console.log("oooo:" + err);
+ });
+ }
+ });
+ */
 
 /**
  * 3. 查询所有科室医生列表--医生基本信息  DoctorList
  */
 /*Department.getDepartmentId()
-  .then(function (ids) {
-    var idsArr = _.pluck(ids, 'id');
-    console.log("##### " + idsArr);
-    for (var i = 0; i < idsArr.length; i++) {
-      var id = idsArr[i];
-      DoctorList.getDoctorListByDepartmentId(id)
-        .then(function (data) {
-          console.log("Finish get data.");
-          return DoctorList.parseAndStore(data, id);
-        })
-        .then(function () {
-          console.log("Finish parse and store data.");
-        }, function (err) {
-          console.log("oooo:" + err);
-        });
-    }
-  });*/
+ .then(function (ids) {
+ var idsArr = _.pluck(ids, 'id');
+ console.log("##### " + idsArr);
+ for (var i = 0; i < idsArr.length; i++) {
+ var id = idsArr[i];
+ DoctorList.getDoctorListByDepartmentId(id)
+ .then(function (data) {
+ console.log("Finish get data.");
+ return DoctorList.parseAndStore(data, id);
+ })
+ .then(function () {
+ console.log("Finish parse and store data.");
+ }, function (err) {
+ console.log("oooo:" + err);
+ });
+ }
+ });*/
 
 /**
  * 4. 查询所有医生详情   Doctor
  */
 /*DoctorList.getId()
-  .then(function (ids) {
-    //var ids2 = JSON.parse(JSON.stringify(ids));
-    var idsArr = _.pluck(ids, 'id');
-    console.log("##### " + idsArr);
-    for (var i = 0; i < idsArr.length; i++) {
-      var id = idsArr[i];
-      Doctor.getDoctorInfoByDoctorId(id)
-        .then(function(data){
-          console.log("Finish get data.");
-          return Doctor.parseAndStore(data);
-        })
-        .then(function(){
-          console.log("Finish parse and store data.");
-        },function(err){
-          console.log("!!!!!! Error:oooo:" + err);
-        });
+ .then(function (ids) {
+ //var ids2 = JSON.parse(JSON.stringify(ids));
+ var idsArr = _.pluck(ids, 'id');
+ console.log("##### " + idsArr);
+ for (var i = 0; i < idsArr.length; i++) {
+ var id = idsArr[i];
+ Doctor.getDoctorInfoByDoctorId(id)
+ .then(function(data){
+ console.log("Finish get data.");
+ return Doctor.parseAndStore(data);
+ })
+ .then(function(){
+ console.log("Finish parse and store data.");
+ },function(err){
+ console.log("!!!!!! Error:oooo:" + err);
+ });
 
-    }
-  });*/
+ }
+ });*/
 
 /**
  * 5. 查询并存储疾病二级科室列表 SubFaculty
  */
 /*
-var keys = HDF.FACULTY_KEYS;//疾病以及科室名已经存为常量
-//console.log("keys: "+keys);
-for(var key in keys){//遍历所有key值
-  console.log("key:"+ key);
-  Faculty.getDiseaseFacultyListByFacultyKey(key)
-    .then(function(data){
-      console.log("Finish get data.");
-      return Faculty.parseAndStore(data.data,data.key);
-    })
-    .then(function(){
-      console.log("Finish parse and store data.");
-    },function(err){
-      console.log("oooo:" + err);
-    });
-};*/
+ var keys = HDF.FACULTY_KEYS;//疾病以及科室名已经存为常量
+ //console.log("keys: "+keys);
+ for(var key in keys){//遍历所有key值
+ console.log("key:"+ key);
+ Faculty.getDiseaseFacultyListByFacultyKey(key)
+ .then(function(data){
+ console.log("Finish get data.");
+ return Faculty.parseAndStore(data.data,data.key);
+ })
+ .then(function(){
+ console.log("Finish parse and store data.");
+ },function(err){
+ console.log("oooo:" + err);
+ });
+ };*/
 
 /**
  * 6. 通过疾病二级科室编号获取疾病列表 + 科室ID  Disease
@@ -297,35 +298,64 @@ for(var key in keys){//遍历所有key值
 /**
  * 通过hdf的id关联地点科室与DoctorRelation
  */
-Department.getDepartmentId()
-  .then(function(data){
-    var list = JSON.parse(JSON.stringify(data));
-    console.log("#####" + list.length);
-    for (var i = 0; i < list.length; i++) {
-      var hs = list[i];
-      var updates = {
-        //provinceId: hs.provinceId,
-        //provinceName: hs.province,
-        hospitalId: hs.hospitalId,
-        hospitalName: hs.hospitalName,
-        departmentId: hs._id,
-        departmentName: hs.name
-      };
-      console.log("Update doctor: " + util.inspect(updates));
-      Doctor.updateDoctor({func: 2, hospitalFacultyId: hs.id}, updates);
-    }
-  });
+//Department.getDepartmentId()
+//  .then(function(data){
+//    var list = JSON.parse(JSON.stringify(data));
+//    console.log("#####" + list.length);
+//    for (var i = 0; i < list.length; i++) {
+//      var hs = list[i];
+//      var updates = {
+//        //provinceId: hs.provinceId,
+//        //provinceName: hs.province,
+//        hospitalId: hs.hospitalId,
+//        hospitalName: hs.hospitalName,
+//        departmentId: hs._id,
+//        departmentName: hs.name
+//      };
+//      console.log("Update doctor: " + util.inspect(updates));
+//      Doctor.updateDoctor({func: 2, hospitalFacultyId: hs.id}, updates);
+//    }
+//  });
+
+// 将所有func=2的医生关系记录中的doctorId字段置为空
+// db.doctors.update({func: 2}, {$set: {doctorId: ""}}, {multi:true})
 
 /**
  * 从func=2的doctor信息中提取医生profile，并存储
  */
-//Doctor.find({func:2})
-//  .then(function(data){
-//    var list = JSON.parse(JSON.stringify(data));
-//    console.log("#####" + list.length);
-//
-//
-//  });
+Doctor.find({func: 2, name: {$nin: HDF.DUPLICATE_NAMES}})
+  .then(function (data) {
+    var list = JSON.parse(JSON.stringify(data));
+    console.log("#####" + list.length);
+    for (var i = 0; i < list.length; i++) {
+      var hs = list[i];
+      var id = hs._id;
+      delete hs._id;
+      delete hs.__v;
+
+      ProfileController.create(hs, id)
+        .then(function(data){
+          var newProfileId = data.profile._id;
+          var relationId = data.id;
+          var conds = {
+            func:2,
+            _id: relationId
+          };
+          var updates = {
+            doctorId: newProfileId
+          };
+          console.log("Cond: " + util.inspect(conds) + " Updates: " + util.inspect(updates));
+          Doctor.updateDoctor(conds, updates)
+            .then(function(){
+            }, function (err){
+              console.log("!!!!!!!UpdateErr:"+err);
+            });
+        }, function(err){
+          console.log("!!!!!!!CreateErr:"+err);
+        });
+
+    }
+  });
 /**
  * 提取 地点索引 与 医生的关系， 并在doctor中单独存储
  */
@@ -351,7 +381,6 @@ Department.getDepartmentId()
 //  });
 //Doctor.changeHdfId2DocMongoId();
 //遍历疾病名 获取医生列表 更新现有医生关联的key
-
 
 
 //function createSupplier(){
