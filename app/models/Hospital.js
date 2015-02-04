@@ -22,6 +22,7 @@ var hospitalSchema = new Schema({
   grade: String,
   featuredFaculties: String,//特点,类型
   provinceId: String,//
+  provinceName: String,
   province: String,//省市
   caseDoctorCount: String,
   bookingDoctorCount: String,

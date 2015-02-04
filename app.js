@@ -269,7 +269,7 @@ Hospital.getHospitalId()
         hospitalName: hs.name
       };
       console.log(util.inspect(updates));
-      Department.getDepartmentListByHospitalIdAndUpdate(hs._id, updates)
+      Department.getDepartmentListByHospitalIdAndUpdate(hs.id, updates)
         .then(function (data) {
           console.log("Finish get data.");
         }, function (err) {
