@@ -390,7 +390,18 @@ Doctor.find({func: 2, name: {$in: HDF.DUPLICATE_NAMES}})
         .then(function(data){
           if (data.profile){
             console.log("Exists!!");
-            //ProfileController.update();
+            var conds = {
+              func:2,
+              _id: data.param._id
+            };
+            var updates = {
+              doctorId: data.profile._id
+            };
+            Doctor.updateDoctor(conds,updates)
+              .then(function(){
+              }, function (err){
+                console.log("!!!!!!!UpdateErr:"+err);
+              });
           }else{
             var pro = data.param;
             var id  = pro._id;
@@ -420,7 +431,7 @@ Doctor.find({func: 2, name: {$in: HDF.DUPLICATE_NAMES}})
           console.log("!!!!!!!FindErr:"+err);
         });
 
-    }, 500);
+    }, 100);
   });
 
 /**
@@ -430,18 +441,42 @@ Doctor.find({func: 2, name: {$in: HDF.DUPLICATE_NAMES}})
 //  .then(function (data){
 //    var list = JSON.parse(JSON.stringify(data));
 //    console.log("#####" + list.length);
-//    for (var i = 0; i < list.length; i++) {
+//    for (var i = 0; i < 2; i++) {
 //      var d = list[i];
 //      var con = {
+//        func: 1,
 //        doctorId: d.id
 //      };
 //      var updates = {
 //        doctorId: d.doctorId
 //      };
-//      Doctor.updateDoctor(con, updates);
+//      Doctor.updateDoctor(con, updates)
+//        .then(function(){},function(err){
+//          console.log("!!!!!!!UpdateErr:"+err);
+//        });
 //    }
+//  }, function(err){
+//    console.log("!!!!!!!FindErr:"+err);
 //  });
-
+/**
+ * 21.1 Index合并表操作 Province
+ */
+//Index.create([{
+//  "_id" : ObjectId("54b8bbd551f77c2d2a029402"),
+//  "name" : "北京",
+//  "isDeleted" : false,
+//  "updatedAt" : 1421391992497,
+//  "createdAt" : 1421391992497,
+//  "source" : "zly",
+//  "type" : 1
+//}]);
+/**
+ * 21.2 Index合并表操作 Hospital
+ */
+//Hospital.find()
+//  .then(function(){
+//
+//  });
 
 /**
  * 提取 地点索引 与 医生的关系， 并在doctor中单独存储

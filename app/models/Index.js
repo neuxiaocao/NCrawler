@@ -21,7 +21,7 @@ var indexSchema = new Schema({
   isDeleted: {type: Boolean, default: false},//该条记录是否被删除
 
 
-  //hdfId: String, //(医院/科室)内部编号
+  hdfId: String, //(医院/科室)内部编号
   name: String,//名称: 人名、地名、科室名
 
   // 医院属性
