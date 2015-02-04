@@ -437,7 +437,8 @@ console.log("Crawler Begin Working....");
 /**
  * 20. 疾病关系 通过科室关系 关联到profile表
  */
-Doctor.find({func: 2}, {_id: 0, id: 1, doctorId: 1})
+Doctor.find({func: 2},
+  {_id: 0, id: 1, doctorId: 1, name: 1, doctorIntro:1, logoUrl: 1})
   .then(function (data){
     var list = JSON.parse(JSON.stringify(data));
     console.log("#####" + list.length);
@@ -453,7 +454,7 @@ Doctor.find({func: 2}, {_id: 0, id: 1, doctorId: 1})
         doctorIntro: d.doctorIntro,
         logoUrl: d.logoUrl
       };
-      console.log("update");
+      console.log(i + "update " + util.inspect(updates));
       Doctor.updateDoctor(con, updates)
         .then(function(){
           console.log("update success!");
