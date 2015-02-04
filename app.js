@@ -280,14 +280,14 @@ console.log("Crawler Begin Working....");
 //  });
 
 //
-// 更新医院信息
+// 14. 更新医院信息
 //db.hospitals.update(
 //  {province:"北京"},
 //  {$set: {provinceId: "54b8bbd551f77c2d2a029402"}},
 //  {multi:true});
 
 //
-// 更新医生关系信息
+// 15. 更新医生关系信息
 //db.doctors.update(
 //  {func:0},
 //  {$set: {func:2, provinceId: "54b8bbd551f77c2d2a029402", provinceName:"北京"}},
@@ -296,7 +296,7 @@ console.log("Crawler Begin Working....");
 
 
 /**
- * 通过hdf的id关联地点科室与DoctorRelation
+ * 16. 通过hdf的id关联地点科室与DoctorRelation
  */
 //Department.getDepartmentId()
 //  .then(function(data){
@@ -317,10 +317,11 @@ console.log("Crawler Begin Working....");
 //    }
 //  });
 
-// 将所有func=2的医生关系记录中的doctorId字段置为空
+// 17. 将所有func=2的医生关系记录中的doctorId字段置为空
 // db.doctors.update({func: 2}, {$set: {doctorId: ""}}, {multi:true})
 
 /**
+* 18. 科室关系  关联到医生profile表 Step1
 * 从func=2的doctor信息中提取医生profile，并存储
 * 提取单点执业的医生profile
 */
@@ -359,6 +360,7 @@ console.log("Crawler Begin Working....");
 //  });
 
 /**
+ * 19. 科室关系  关联到医生profile表 Step2
  * 从func=2的doctor信息中提取医生profile，并存储
  * 提取非单点执业的医生profile
  */
@@ -366,8 +368,12 @@ Doctor.find({func: 2, name: {$in: HDF.DUPLICATE_NAMES}})
   .then(function (data) {
     var list = JSON.parse(JSON.stringify(data));
     console.log("#####" + list.length);
-    for (var i = 0; i < list.length; i++) {
-      var hs = list[i];
+    //for (var i = 0; i < list.length; i++) {
+    var num = -1;
+    setInterval(function(){
+      num++;
+      if (num >= list.length) return;
+      var hs = list[num];
       //var id = hs._id;
       //判断医生唯一的标准: 姓名相同 + 个人简介相同 + 个人专长投票信息相同
       var name  = hs.name;
@@ -384,6 +390,7 @@ Doctor.find({func: 2, name: {$in: HDF.DUPLICATE_NAMES}})
         .then(function(data){
           if (data.profile){
             console.log("Exists!!");
+            //ProfileController.update();
           }else{
             var pro = data.param;
             var id  = pro._id;
@@ -413,8 +420,28 @@ Doctor.find({func: 2, name: {$in: HDF.DUPLICATE_NAMES}})
           console.log("!!!!!!!FindErr:"+err);
         });
 
-    }
+    }, 500);
   });
+
+/**
+ * 20. 疾病关系 通过科室关系 关联到profile表
+ */
+//Doctor.find({func: 2}, {_id: 0, id: 1, doctorId: 1})
+//  .then(function (data){
+//    var list = JSON.parse(JSON.stringify(data));
+//    console.log("#####" + list.length);
+//    for (var i = 0; i < list.length; i++) {
+//      var d = list[i];
+//      var con = {
+//        doctorId: d.id
+//      };
+//      var updates = {
+//        doctorId: d.doctorId
+//      };
+//      Doctor.updateDoctor(con, updates);
+//    }
+//  });
+
 
 /**
  * 提取 地点索引 与 医生的关系， 并在doctor中单独存储

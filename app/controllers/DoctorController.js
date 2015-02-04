@@ -100,8 +100,8 @@ exports.parseAndStore = function (json) {
     });
 };
 
-exports.find = function (con){
-  return Doctor.find(con).exec();
+exports.find = function (con, fields){
+  return Doctor.find(con, fields).exec();
 };
 
 exports.getDoctorListByDiseaseKey = function (key, relation) {
