@@ -364,100 +364,106 @@ console.log("Crawler Begin Working....");
  * 从func=2的doctor信息中提取医生profile，并存储
  * 提取非单点执业的医生profile
  */
-Doctor.find({func: 2, name: {$in: HDF.DUPLICATE_NAMES}})
-  .then(function (data) {
-    var list = JSON.parse(JSON.stringify(data));
-    console.log("#####" + list.length);
-    //for (var i = 0; i < list.length; i++) {
-    var num = -1;
-    setInterval(function(){
-      num++;
-      if (num >= list.length) return;
-      var hs = list[num];
-      //var id = hs._id;
-      //判断医生唯一的标准: 姓名相同 + 个人简介相同 + 个人专长投票信息相同
-      var name  = hs.name;
-      var intro = hs.doctorIntro;//个人简介信息
-      var vote  = hs.diseaseVotes;//个人专长投票信息
-      delete hs.__v;
-      var con = {
-        name: name,
-        doctorIntro: intro,
-        diseaseVotes: vote
-      };
-      console.log("Profile conditions: " + util.inspect(con));
-      ProfileController.find(con, hs)
-        .then(function(data){
-          if (data.profile){
-            console.log("Exists!!");
-            var conds = {
-              func:2,
-              _id: data.param._id
-            };
-            var updates = {
-              doctorId: data.profile._id
-            };
-            Doctor.updateDoctor(conds,updates)
-              .then(function(){
-              }, function (err){
-                console.log("!!!!!!!UpdateErr:"+err);
-              });
-          }else{
-            var pro = data.param;
-            var id  = pro._id;
-            delete pro._id;
-            ProfileController.create(pro, id)
-              .then(function(data){
-                var newProfileId = data.profile._id;
-                var relationId = data.id;
-                var conds = {
-                  func:2,
-                  _id: relationId
-                };
-                var updates = {
-                  doctorId: newProfileId
-                };
-                console.log("Cond: " + util.inspect(conds) + " Updates: " + util.inspect(updates));
-                Doctor.updateDoctor(conds, updates)
-                  .then(function(){
-                  }, function (err){
-                    console.log("!!!!!!!UpdateErr:"+err);
-                  });
-              }, function(err){
-                console.log("!!!!!!!CreateErr:"+err);
-              });
-          }
-        }, function(err){
-          console.log("!!!!!!!FindErr:"+err);
-        });
-
-    }, 100);
-  });
+//Doctor.find({func: 2, name: {$in: HDF.DUPLICATE_NAMES}})
+//  .then(function (data) {
+//    var list = JSON.parse(JSON.stringify(data));
+//    console.log("#####" + list.length);
+//    //for (var i = 0; i < list.length; i++) {
+//    var num = -1;
+//    setInterval(function(){
+//      num++;
+//      if (num >= list.length) return;
+//      var hs = list[num];
+//      //var id = hs._id;
+//      //判断医生唯一的标准: 姓名相同 + 个人简介相同 + 个人专长投票信息相同
+//      var name  = hs.name;
+//      var intro = hs.doctorIntro;//个人简介信息
+//      var vote  = hs.diseaseVotes;//个人专长投票信息
+//      delete hs.__v;
+//      var con = {
+//        name: name,
+//        doctorIntro: intro,
+//        diseaseVotes: vote
+//      };
+//      console.log("Profile conditions: " + util.inspect(con));
+//      ProfileController.find(con, hs)
+//        .then(function(data){
+//          if (data.profile){
+//            console.log("Exists!!");
+//            var conds = {
+//              func:2,
+//              _id: data.param._id
+//            };
+//            var updates = {
+//              doctorId: data.profile._id
+//            };
+//            Doctor.updateDoctor(conds,updates)
+//              .then(function(){
+//              }, function (err){
+//                console.log("!!!!!!!UpdateErr:"+err);
+//              });
+//          }else{
+//            var pro = data.param;
+//            var id  = pro._id;
+//            delete pro._id;
+//            ProfileController.create(pro, id)
+//              .then(function(data){
+//                var newProfileId = data.profile._id;
+//                var relationId = data.id;
+//                var conds = {
+//                  func:2,
+//                  _id: relationId
+//                };
+//                var updates = {
+//                  doctorId: newProfileId
+//                };
+//                console.log("Cond: " + util.inspect(conds) + " Updates: " + util.inspect(updates));
+//                Doctor.updateDoctor(conds, updates)
+//                  .then(function(){
+//                  }, function (err){
+//                    console.log("!!!!!!!UpdateErr:"+err);
+//                  });
+//              }, function(err){
+//                console.log("!!!!!!!CreateErr:"+err);
+//              });
+//          }
+//        }, function(err){
+//          console.log("!!!!!!!FindErr:"+err);
+//        });
+//
+//    }, 100);
+//  });
 
 /**
  * 20. 疾病关系 通过科室关系 关联到profile表
  */
-//Doctor.find({func: 2}, {_id: 0, id: 1, doctorId: 1})
-//  .then(function (data){
-//    var list = JSON.parse(JSON.stringify(data));
-//    console.log("#####" + list.length);
-//    for (var i = 0; i < 2; i++) {
-//      var d = list[i];
-//      var con = {
-//        func: 1,
-//        doctorId: d.id
-//      };
-//      var updates = {
-//        doctorId: d.doctorId
-//      };
-//      Doctor.updateDoctor(con, updates)
-//        .then(function(){},function(err){
-//          console.log("!!!!!!!UpdateErr:"+err);
-//        });
-//    }
-//  }, function(err){
-//    console.log("!!!!!!!FindErr:"+err);
-//  });
+Doctor.find({func: 2}, {_id: 0, id: 1, doctorId: 1})
+  .then(function (data){
+    var list = JSON.parse(JSON.stringify(data));
+    console.log("#####" + list.length);
+    for (var i = 0; i < list.length; i++) {
+      var d = list[i];
+      var con = {
+        func: 1,
+        doctorId: d.id
+      };
+      var updates = {
+        doctorId: d.doctorId,
+        doctorName: d.name,
+        doctorIntro: d.doctorIntro,
+        logoUrl: d.logoUrl
+      };
+      console.log("update");
+      Doctor.updateDoctor(con, updates)
+        .then(function(){
+          console.log("update success!");
+        },function(err){
+          console.log("!!!!!!!UpdateErr:"+err);
+        });
+    }
+  }, function(err){
+    console.log("!!!!!!!FindErr:"+err);
+  });
 /**
  * 21.1 Index合并表操作 Province
  */
@@ -473,10 +479,107 @@ Doctor.find({func: 2, name: {$in: HDF.DUPLICATE_NAMES}})
 /**
  * 21.2 Index合并表操作 Hospital
  */
-//Hospital.find()
-//  .then(function(){
+//Hospital.find({},
+//  "_id id name district gps doctorCount grade featuredFaculties provinceId provinceName " +
+//    " caseDoctorCount bookingDoctorCount ")
+//  .then(function(data){
+//    var list = JSON.parse(JSON.stringify(data));
+//    console.log("#####" + list.length);
+//    var newList = [];
+//    for (var i = 0; i < list.length; i++) {
+//      var hos = list[i];
 //
+//      newList.push(
+//        _.extend(
+//          _.clone(hos),{hdfId: hos.id, type:2}));
+//    }
+//    console.log("List: " + util.inspect(newList));
+//    Index.create(newList);
 //  });
+
+///**
+// * 21.3 Index合并表操作 Department
+// */
+//Department.find({},
+//  "_id id provinceId provinceName hospitalId hospitalName name doctorCount " +
+//    " category order caseDoctorCount bookingDoctorCount ")
+//  .then(function(data){
+//    var list = JSON.parse(JSON.stringify(data));
+//    console.log("#####" + list.length);
+//    var newList = [];
+//    for (var i = 0; i < list.length; i++) {
+//      var dep = list[i];
+//
+//      newList.push(
+//        _.extend(
+//          _.clone(dep),{hdfId: dep.id, type:3}));
+//    }
+//    console.log("List: " + util.inspect(newList));
+//    Index.create(newList);
+//  });
+
+///**
+// * 21.4 Index合并表操作 Faculty
+// */
+//Faculty.find({},
+//    "_id key name ")
+//  .then(function(data){
+//    var list = JSON.parse(JSON.stringify(data));
+//    console.log("#####" + list.length);
+//    var newList = [];
+//    for (var i = 0; i < list.length; i++) {
+//      var fac = list[i];
+//
+//      newList.push(
+//        _.extend(
+//          _.clone(fac),{type:4}));
+//    }
+//    console.log("List: " + util.inspect(newList));
+//    Index.create(newList);
+//  });
+
+/**
+* 21.5 Index合并表操作 SubFaculty
+*/
+//SubFaculty.find({},
+//  "_id id name facultyId facultyKey facultyName").exec()
+//  .then(function(data){
+//    var list = JSON.parse(JSON.stringify(data));
+//    console.log("#####" + list.length);
+//    var newList = [];
+//    for (var i = 0; i < list.length; i++) {
+//      var sub = list[i];
+//
+//      newList.push(
+//        _.extend(
+//          _.clone(sub),{hdfId: sub.id, type:5}));
+//    }
+//    console.log("List: " + util.inspect(newList));
+//    Index.create(newList);
+//  });
+
+/**
+ * 21.6 Index合并表操作 Disease
+ */
+//DiseaseController.find({},
+//  "_id id key name brief  diseaseDoctorCount spaceDoctorCount " +
+//    "facultyId facultyKey facultyName subFacultyId subFacultyName")
+//  .then(function(data){
+//    var list = JSON.parse(JSON.stringify(data));
+//    console.log("#####" + list.length);
+//    var newList = [];
+//    for (var i = 0; i < list.length; i++) {
+//      var dis = list[i];
+//
+//      newList.push(
+//        _.extend(
+//          _.clone(dis),{hdfId: dis.id, type:6}));
+//    }
+//    console.log("List: " + util.inspect(newList));
+//    Index.create(newList);
+//  });
+
+
 
 /**
  * 提取 地点索引 与 医生的关系， 并在doctor中单独存储

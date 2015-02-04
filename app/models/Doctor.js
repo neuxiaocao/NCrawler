@@ -37,12 +37,14 @@ var aSchema = new Schema({
   hospitalFacultyName: String,//科室
   hospitalFacultyFullName: String,//医院科室全称
 
-  id: String,//{type: String, unique: true}, //hdf内部编号
   doctorId: String, //医生id
+  doctorName: String,
+
+  id: String,//{type: String, unique: true}, //hdf内部编号
+  name: {type: String, default: ''},
+  doctorIntro: String,//医生简介
   newCaseIntro: String, //最新接诊介绍
   doctorCommentCnt: String,
-  doctorName: String,
-  name: {type: String, default: ''},
   logoUrl: String, //头像 TODO 转存到青牛服务器上
   fullGrade: String, //职称
   specialize: String,  //专长
@@ -51,7 +53,6 @@ var aSchema = new Schema({
   needUserInfo: String,
   schedule: String,        //出诊时间描述
   isStrictComment: String,
-  doctorIntro: String,//医生简介
   articleCount: String,
   caseCount: String,
   canVote: String,

@@ -12,6 +12,9 @@ var
   Faculty = require('../models/Faculty'),
   SubFaculty = require('../models/SubFaculty');
 
+exports.find = function (con, fields){
+  return Faculty.find(con, fields).exec();
+};
 /**
  * 初始化疾病一级科室
  * @param json

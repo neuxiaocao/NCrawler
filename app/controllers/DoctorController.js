@@ -164,5 +164,6 @@ exports.getDoctorInfo = function (conds,fields) {
 };
 
 exports.updateDoctor = function (conds, updates) {
+  //console.log("Begin");
   return Doctor.update(conds, updates, {multi: true}).exec();
 };

@@ -104,8 +104,8 @@ exports.parseAndStore = function (json, id){
   }
 };
 
-exports.find = function (con){
-  return Department.find(con).exec();
+exports.find = function (con, fields){
+  return Department.find(con, fields).exec();
 };
 
 exports.create = function(spl){

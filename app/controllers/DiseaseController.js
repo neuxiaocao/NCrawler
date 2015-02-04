@@ -10,6 +10,9 @@ var
   _ = require('underscore'),
   Disease = require('../models/Disease');
 
+exports.find = function (con, fields){
+  return Disease.find(con, fields).exec();
+};
 exports.connectIndexWithDoctor = function (id) {
   //
   Disease.find({}, "facultyId facultyKey facultyName subFacultyId subFacultyName " +

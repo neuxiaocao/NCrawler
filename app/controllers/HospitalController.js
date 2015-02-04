@@ -88,8 +88,8 @@ exports.parseAndStore = function (json){
   }
 };
 
-exports.find = function (con){
-  return Hospital.find(con).exec();
+exports.find = function (con, fields){
+  return Hospital.find(con, fields).exec();
 };
 
 exports.create = function(spl){
