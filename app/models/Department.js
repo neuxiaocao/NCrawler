@@ -15,7 +15,12 @@ var DepartmentSchema = new Schema({
   // 基本属性
   sourceType: {type: String, default: 'hdf'},//hdf - 来源好大夫
   id: {type: String, unique: true}, //内部编号
-  hospitalId: String, //医院编号
+
+  provinceId: String,
+  provinceName: String,
+  hospitalId: String,   //医院编号
+  hospitalName: String, //医院名称
+
   name: {type: String, default: ''},//名称
   doctorCount: String, //医生总数
   category: String,    //类别

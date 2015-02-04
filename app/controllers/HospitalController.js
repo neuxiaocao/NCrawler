@@ -56,7 +56,7 @@ exports.getHospitalListByProvince = function (province) {
 };
 
 exports.getHospitalId = function () {
-  return Hospital.find({}, "id").exec();
+  return Hospital.find({}, "id name provinceId province").exec();
 };
 
 /**

@@ -27,6 +27,12 @@ var aSchema = new Schema({
   diseaseKey: {type:String, default:""},
   diseaseName: {type:String, default:""},
 
+  province: String,
+  hospitalId: String, //医院ID
+  hospitalName: String,
+  hospitalFacultyId: String,
+  hospitalFacultyName: String,//科室
+  hospitalFacultyFullName: String,//医院科室全称
 
   id: String,//{type: String, unique: true}, //hdf内部编号
   doctorId: String, //医生id
@@ -35,18 +41,12 @@ var aSchema = new Schema({
   doctorName: String,
   name: {type: String, default: ''},
   logoUrl: String, //头像 TODO 转存到青牛服务器上
-  hospitalName: String,
-  hospitalFacultyId: String,
-  hospitalFacultyName: String,//科室
-  hospitalFacultyFullName: String,//医院科室全称
   fullGrade: String, //职称
   specialize: String,  //专长
   diseaseVotes: String,
   goodVoteCount: String,
   needUserInfo: String,
   schedule: String,        //出诊时间描述
-  province: String,
-  hospitalId: String, //医院ID
   isStrictComment: String,
   doctorIntro: String,//医生简介
   articleCount: String,

@@ -182,86 +182,105 @@ for(var key in keys){//遍历所有key值
 /**
  * 10. 关联疾病一级科室、二级科室、疾病 与 医生 更新医生列表 (关系)
  */
-DiseaseController.getDiseaseList()
-  .then(function(list){
-    //console.log("Finish get disease list")
-    console.log("length: " + list.length);
-    //for (var data in list){
-    var data = -1;
-    setInterval(function(){
-      data++;
-      console.log("********"+data);
-      var key = list[data].key;
-      var relation = {
-        func: 1,
-        facultyId: list[data].facultyId,
-        facultyName: list[data].facultyName,
-        facultyKey: list[data].facultyKey,
-        subFacultyId: list[data].subFacultyId,
-        subFacultyName: list[data].subFacultyName,
-        diseaseId: list[data]._id,
-        diseaseKey: key,
-        diseaseName: list[data].name
-      };
-      Doctor.getDoctorListByDiseaseKey(key, relation)
-        .then(function (result){
-          //console.log("Result return! " + util.inspect(result) );
-          var doctorList = (JSON.parse(result.data)).content;
-          var relation = result.relation;
-          var relationList = [];
-          var hdfID;
-          for (var index in doctorList){
-            hdfID = doctorList[index].id;
-            //console.log( index + " : id : " + hdfID);
-            relationList.push(
-              _.extend(
-                _.clone(relation), {doctorId: hdfID}));
-          }
-          //console.log("==========================data: " + util.inspect(relationList));
-          return Doctor.create(relationList);
-        })
-        .then(function(){
-          console.log("Create Success");
-        }, function(err){
-          console.log("!!!!!!Err: " + err);
-        });
-    },3000);
-    //}
-  });
+//DiseaseController.getDiseaseList()
+//  .then(function(list){
+//    //console.log("Finish get disease list")
+//    console.log("length: " + list.length);
+//    //for (var data in list){
+//    var data = -1;
+//    setInterval(function(){
+//      data++;
+//      console.log("********"+data);
+//      var key = list[data].key;
+//      var relation = {
+//        func: 1,
+//        facultyId: list[data].facultyId,
+//        facultyName: list[data].facultyName,
+//        facultyKey: list[data].facultyKey,
+//        subFacultyId: list[data].subFacultyId,
+//        subFacultyName: list[data].subFacultyName,
+//        diseaseId: list[data]._id,
+//        diseaseKey: key,
+//        diseaseName: list[data].name
+//      };
+//      Doctor.getDoctorListByDiseaseKey(key, relation)
+//        .then(function (result){
+//          //console.log("Result return! " + util.inspect(result) );
+//          var doctorList = (JSON.parse(result.data)).content;
+//          var relation = result.relation;
+//          var relationList = [];
+//          var hdfID;
+//          for (var index in doctorList){
+//            hdfID = doctorList[index].id;
+//            //console.log( index + " : id : " + hdfID);
+//            relationList.push(
+//              _.extend(
+//                _.clone(relation), {doctorId: hdfID}));
+//          }
+//          //console.log("==========================data: " + util.inspect(relationList));
+//          return Doctor.create(relationList);
+//        })
+//        .then(function(){
+//          console.log("Create Success");
+//        }, function(err){
+//          console.log("!!!!!!Err: " + err);
+//        });
+//    },3000);
+//    //}
+//  });
 
 /**
- * 11. update医生表，更新医生索引关系记录
- *  表内聚合命令
+ * 11. 新增北京索引
  */
+//Index.create([{
+//  "_id" : ObjectId("54b8bbd551f77c2d2a029402"),
+//  "name" : "北京",
+//  "isDeleted" : false,
+//  "updatedAt" : 1421391992497,
+//  "createdAt" : 1421391992497,
+//  "source" : "zly",
+//  "type" : 1
+//}]);
+
+/**
+ * 12. 关联北京-医院
+ *  MongoDB语句
+ */
+//db.hospitals.update(
+//  {province:"北京"},
+//  {$set: {provinceId: "54b8bbd551f77c2d2a029402"}},
+//  {multi:true});
+
+/**
+ * 13. 关联医院-科室
+ *     更新所有科室数据,关联到对应的医院_id
+ */
+Hospital.getHospitalId()
+  .then(function (data) {
+    var list = JSON.parse(JSON.stringify(data));
+    //var idsArr = _.pluck(ids, 'id');
+    console.log("#####" + list.length);
+    for (var i = 0; i < list.length; i++) {
+      var hs = list[i];
+      var updates = {
+        provinceId: hs.provinceId,
+        provinceName: hs.province,
+        hospitalId: hs._id,
+        hospitalName: hs.name
+      };
+      console.log(util.inspect(updates));
+      Department.getDepartmentListByHospitalIdAndUpdate(hs._id, updates)
+        .then(function (data) {
+          console.log("Finish get data.");
+        }, function (err) {
+          console.log("oooo:" + err);
+        });
+    }
+  });
+
 //Doctor.changeHdfId2DocMongoId();
 //遍历疾病名 获取医生列表 更新现有医生关联的key
 
-
-
-
-
-
-
-/**
- * 更新所有科室数据,关联到对应的医院_id
- */
-//Hospital.getHospitalId()
-//  .then(function (ids) {
-//    //var ids2 = JSON.parse(JSON.stringify(ids));
-//    //var idsArr = _.pluck(ids, 'id');
-//    //console.log("#####
-// " + idsArr);
-//    for (var i = 0; i < ids.length; i++) {
-//      var hs = ids[i];
-//
-//      Department.getDepartmentListByHospitalIdAndUpdate(hs.id, hs._id)
-//        .then(function (data) {
-//          console.log("Finish get data.");
-//        }, function (err) {
-//          console.log("oooo:" + err);
-//        });
-//    }
-//  });
 
 /**
  * 更新所有医生详情数据,关联到有医生的 hospitalId
