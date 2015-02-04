@@ -321,41 +321,101 @@ console.log("Crawler Begin Working....");
 // db.doctors.update({func: 2}, {$set: {doctorId: ""}}, {multi:true})
 
 /**
+* 从func=2的doctor信息中提取医生profile，并存储
+* 提取单点执业的医生profile
+*/
+//Doctor.find({func: 2, name: {$nin: HDF.DUPLICATE_NAMES}})
+//  .then(function (data) {
+//    var list = JSON.parse(JSON.stringify(data));
+//    console.log("#####" + list.length);
+//    for (var i = 0; i < list.length; i++) {
+//      var hs = list[i];
+//      var id = hs._id;
+//      delete hs._id;
+//      delete hs.__v;
+//
+//      ProfileController.create(hs, id)
+//        .then(function(data){
+//          var newProfileId = data.profile._id;
+//          var relationId = data.id;
+//          var conds = {
+//            func:2,
+//            _id: relationId
+//          };
+//          var updates = {
+//            doctorId: newProfileId
+//          };
+//          console.log("Cond: " + util.inspect(conds) + " Updates: " + util.inspect(updates));
+//          Doctor.updateDoctor(conds, updates)
+//            .then(function(){
+//            }, function (err){
+//              console.log("!!!!!!!UpdateErr:"+err);
+//            });
+//        }, function(err){
+//          console.log("!!!!!!!CreateErr:"+err);
+//        });
+//
+//    }
+//  });
+
+/**
  * 从func=2的doctor信息中提取医生profile，并存储
+ * 提取非单点执业的医生profile
  */
-Doctor.find({func: 2, name: {$nin: HDF.DUPLICATE_NAMES}})
+Doctor.find({func: 2, name: {$in: HDF.DUPLICATE_NAMES}})
   .then(function (data) {
     var list = JSON.parse(JSON.stringify(data));
     console.log("#####" + list.length);
     for (var i = 0; i < list.length; i++) {
       var hs = list[i];
-      var id = hs._id;
-      delete hs._id;
+      //var id = hs._id;
+      //判断医生唯一的标准: 姓名相同 + 个人简介相同 + 个人专长投票信息相同
+      var name  = hs.name;
+      var intro = hs.doctorIntro;//个人简介信息
+      var vote  = hs.diseaseVotes;//个人专长投票信息
       delete hs.__v;
-
-      ProfileController.create(hs, id)
+      var con = {
+        name: name,
+        doctorIntro: intro,
+        diseaseVotes: vote
+      };
+      console.log("Profile conditions: " + util.inspect(con));
+      ProfileController.find(con, hs)
         .then(function(data){
-          var newProfileId = data.profile._id;
-          var relationId = data.id;
-          var conds = {
-            func:2,
-            _id: relationId
-          };
-          var updates = {
-            doctorId: newProfileId
-          };
-          console.log("Cond: " + util.inspect(conds) + " Updates: " + util.inspect(updates));
-          Doctor.updateDoctor(conds, updates)
-            .then(function(){
-            }, function (err){
-              console.log("!!!!!!!UpdateErr:"+err);
-            });
+          if (data.profile){
+            console.log("Exists!!");
+          }else{
+            var pro = data.param;
+            var id  = pro._id;
+            delete pro._id;
+            ProfileController.create(pro, id)
+              .then(function(data){
+                var newProfileId = data.profile._id;
+                var relationId = data.id;
+                var conds = {
+                  func:2,
+                  _id: relationId
+                };
+                var updates = {
+                  doctorId: newProfileId
+                };
+                console.log("Cond: " + util.inspect(conds) + " Updates: " + util.inspect(updates));
+                Doctor.updateDoctor(conds, updates)
+                  .then(function(){
+                  }, function (err){
+                    console.log("!!!!!!!UpdateErr:"+err);
+                  });
+              }, function(err){
+                console.log("!!!!!!!CreateErr:"+err);
+              });
+          }
         }, function(err){
-          console.log("!!!!!!!CreateErr:"+err);
+          console.log("!!!!!!!FindErr:"+err);
         });
 
     }
   });
+
 /**
  * 提取 地点索引 与 医生的关系， 并在doctor中单独存储
  */

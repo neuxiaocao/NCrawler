@@ -22,3 +22,16 @@ exports.create = function (data, param){
     });
   //return deferred.promise;
 };
+
+exports.find = function (con, param) {
+  var deferred = Q.defer();
+  return Profile.findOne(con).exec()
+    .then(function (d){
+      deferred.resolve({profile: d, param: param});
+      return deferred.promise;
+    }, function(err){
+      console.log("!!!!Find Err!!!:" + err);
+      deferred.reject(err);
+      return deferred.promise;
+    })
+};
