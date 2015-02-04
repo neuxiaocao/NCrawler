@@ -314,9 +314,18 @@ Department.getDepartmentId()
       console.log("Update doctor: " + util.inspect(updates));
       Doctor.updateDoctor({func: 2, hospitalFacultyId: hs.id}, updates);
     }
-
   });
 
+/**
+ * 从func=2的doctor信息中提取医生profile，并存储
+ */
+//Doctor.find({func:2})
+//  .then(function(data){
+//    var list = JSON.parse(JSON.stringify(data));
+//    console.log("#####" + list.length);
+//
+//
+//  });
 /**
  * 提取 地点索引 与 医生的关系， 并在doctor中单独存储
  */
