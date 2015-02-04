@@ -437,7 +437,7 @@ console.log("Crawler Begin Working....");
 /**
  * 20. 疾病关系 通过科室关系 关联到profile表
  */
-Doctor.find({func: 2},
+Doctor.find({func: 2, id:{$in: HDF.TMP_LIST}},
   {_id: 0, id: 1, doctorId: 1, name: 1, logoUrl: 1})
   .then(function (data){
     var list = JSON.parse(JSON.stringify(data));
@@ -446,14 +446,14 @@ Doctor.find({func: 2},
       var d = list[i];
       var con = {
         func: 1,
-        doctorId: d.id,
-        doctorName: {$exists: false}
+        doctorId: d.id//,
+        //doctorName: {$exists: false}
       };
       var updates = {
         doctorId: d.doctorId,
-        doctorName: d.name,
+        doctorName: d.name//,
         //doctorIntro: d.doctorIntro,
-        logoUrl: d.logoUrl
+        //logoUrl: d.logoUrl
       };
       //console.log(i + "update " + util.inspect(updates));
       Doctor.updateDoctor(con, updates)
