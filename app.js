@@ -516,43 +516,43 @@ console.log("Crawler Begin Working....");
 ///**
 // * 21.3 Index合并表操作 Department
 // */
-Department.find({},
-  "_id id provinceId provinceName hospitalId hospitalName name doctorCount " +
-    " category order caseDoctorCount bookingDoctorCount ")
-  .then(function(data){
-    var list = JSON.parse(JSON.stringify(data));
-    console.log("#####" + list.length);
-    var newList = [];
-    for (var i = 0; i < list.length; i++) {
-      var dep = list[i];
-
-      newList.push(
-        _.extend(
-          _.clone(dep),{hdfId: dep.id, type:3}));
-    }
-    console.log("List: " + util.inspect(newList));
-    Index.create(newList);
-  });
-
-///**
-// * 21.4 Index合并表操作 Faculty
-// */
-//Faculty.find({},
-//    "_id key name ")
+//Department.find({},
+//  "_id id provinceId provinceName hospitalId hospitalName name doctorCount " +
+//    " category order caseDoctorCount bookingDoctorCount ")
 //  .then(function(data){
 //    var list = JSON.parse(JSON.stringify(data));
 //    console.log("#####" + list.length);
 //    var newList = [];
 //    for (var i = 0; i < list.length; i++) {
-//      var fac = list[i];
+//      var dep = list[i];
 //
 //      newList.push(
 //        _.extend(
-//          _.clone(fac),{type:4}));
+//          _.clone(dep),{hdfId: dep.id, type:3}));
 //    }
-//    console.log("List: " + util.inspect(newList));
+//    //console.log("List: " + util.inspect(newList));
 //    Index.create(newList);
 //  });
+
+///**
+// * 21.4 Index合并表操作 Faculty
+// */
+Faculty.find({},
+    "_id key name ")
+  .then(function(data){
+    var list = JSON.parse(JSON.stringify(data));
+    console.log("#####" + list.length);
+    var newList = [];
+    for (var i = 0; i < list.length; i++) {
+      var fac = list[i];
+
+      newList.push(
+        _.extend(
+          _.clone(fac),{type:4}));
+    }
+    console.log("List: " + util.inspect(newList));
+    Index.create(newList);
+  });
 
 /**
 * 21.5 Index合并表操作 SubFaculty
