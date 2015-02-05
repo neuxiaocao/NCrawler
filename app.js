@@ -466,6 +466,15 @@ console.log("Crawler Begin Working....");
 //  }, function(err){
 //    console.log("!!!!!!!FindErr:"+err);
 //  });
+//
+//
+//  有部分为关联上的关系,标识删除  MongoDB脚本
+//db.doctors.find(  {func:1, doctorName:{$exists: false}});
+//db.doctors.update(
+//  {func:1, doctorName:{$exists: false}},
+//  {$set: {isDeleted: true}},
+//  {multi: true});
+
 /**
  * 21.1 Index合并表操作 Province
  */
@@ -481,49 +490,49 @@ console.log("Crawler Begin Working....");
 /**
  * 21.2 Index合并表操作 Hospital
  */
-Hospital.find({},
-  "_id id name district gps doctorCount grade featuredFaculties provinceId provinceName " +
-    " caseDoctorCount bookingDoctorCount ")
-  .then(function(data){
-    var list = JSON.parse(JSON.stringify(data));
-    console.log("#####" + list.length);
-    var newList = [];
-    for (var i = 0; i < list.length; i++) {
-      var hos = list[i];
-
-      newList.push(
-        _.extend(
-          _.clone(hos),{hdfId: hos.id, type:2}));
-    }
-    //console.log("List: " + util.inspect(newList));
-    return Index.create(newList);
-  })
-  .then(function(){
-    console.log("Success")
-  },function(err){
-    console.log("!!!!!!!Err:"+err);
-  });
-
-///**
-// * 21.3 Index合并表操作 Department
-// */
-//Department.find({},
-//  "_id id provinceId provinceName hospitalId hospitalName name doctorCount " +
-//    " category order caseDoctorCount bookingDoctorCount ")
+//Hospital.find({},
+//  "_id id name district gps doctorCount grade featuredFaculties provinceId provinceName " +
+//    " caseDoctorCount bookingDoctorCount ")
 //  .then(function(data){
 //    var list = JSON.parse(JSON.stringify(data));
 //    console.log("#####" + list.length);
 //    var newList = [];
 //    for (var i = 0; i < list.length; i++) {
-//      var dep = list[i];
+//      var hos = list[i];
 //
 //      newList.push(
 //        _.extend(
-//          _.clone(dep),{hdfId: dep.id, type:3}));
+//          _.clone(hos),{hdfId: hos.id, type:2}));
 //    }
-//    console.log("List: " + util.inspect(newList));
-//    Index.create(newList);
+//    //console.log("List: " + util.inspect(newList));
+//    return Index.create(newList);
+//  })
+//  .then(function(){
+//    console.log("Success")
+//  },function(err){
+//    console.log("!!!!!!!Err:"+err);
 //  });
+
+///**
+// * 21.3 Index合并表操作 Department
+// */
+Department.find({},
+  "_id id provinceId provinceName hospitalId hospitalName name doctorCount " +
+    " category order caseDoctorCount bookingDoctorCount ")
+  .then(function(data){
+    var list = JSON.parse(JSON.stringify(data));
+    console.log("#####" + list.length);
+    var newList = [];
+    for (var i = 0; i < list.length; i++) {
+      var dep = list[i];
+
+      newList.push(
+        _.extend(
+          _.clone(dep),{hdfId: dep.id, type:3}));
+    }
+    console.log("List: " + util.inspect(newList));
+    Index.create(newList);
+  });
 
 ///**
 // * 21.4 Index合并表操作 Faculty
