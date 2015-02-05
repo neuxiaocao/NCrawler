@@ -537,42 +537,42 @@ console.log("Crawler Begin Working....");
 ///**
 // * 21.4 Index合并表操作 Faculty
 // */
-Faculty.find({},
-    "_id key name ")
-  .then(function(data){
-    var list = JSON.parse(JSON.stringify(data));
-    console.log("#####" + list.length);
-    var newList = [];
-    for (var i = 0; i < list.length; i++) {
-      var fac = list[i];
-
-      newList.push(
-        _.extend(
-          _.clone(fac),{type:4}));
-    }
-    console.log("List: " + util.inspect(newList));
-    Index.create(newList);
-  });
-
-/**
-* 21.5 Index合并表操作 SubFaculty
-*/
-//SubFaculty.find({},
-//  "_id id name facultyId facultyKey facultyName").exec()
+//Faculty.find({},
+//    "_id key name ")
 //  .then(function(data){
 //    var list = JSON.parse(JSON.stringify(data));
 //    console.log("#####" + list.length);
 //    var newList = [];
 //    for (var i = 0; i < list.length; i++) {
-//      var sub = list[i];
+//      var fac = list[i];
 //
 //      newList.push(
 //        _.extend(
-//          _.clone(sub),{hdfId: sub.id, type:5}));
+//          _.clone(fac),{type:4}));
 //    }
 //    console.log("List: " + util.inspect(newList));
 //    Index.create(newList);
 //  });
+
+/**
+* 21.5 Index合并表操作 SubFaculty
+*/
+SubFaculty.find({},
+  "_id id name facultyId facultyKey facultyName").exec()
+  .then(function(data){
+    var list = JSON.parse(JSON.stringify(data));
+    console.log("#####" + list.length);
+    var newList = [];
+    for (var i = 0; i < list.length; i++) {
+      var sub = list[i];
+
+      newList.push(
+        _.extend(
+          _.clone(sub),{hdfId: sub.id, type:5}));
+    }
+    //console.log("List: " + util.inspect(newList));
+    Index.create(newList);
+  });
 
 /**
  * 21.6 Index合并表操作 Disease
