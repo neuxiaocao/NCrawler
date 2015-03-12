@@ -5,6 +5,8 @@
  *  NCrawler
  *  Created by Jacky.L on 1/29/15.
  *  Copyright (c) 2014 ZLYCare. All rights reserved.
+ *  地址解析：http://api.map.baidu.com/geocoder?address=北大医院&output=json&coord_type=bd09ll
+ *  反向地址解析：http://api.map.baidu.com/geocoder?location=39.937968,116.386391&coord_type=bd09ll&output=html
  */
 
 var fs = require("fs"),
