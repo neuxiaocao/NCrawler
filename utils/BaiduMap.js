@@ -17,6 +17,7 @@ var fs = require("fs"),
   hosArrys = hospitals.split('\n'),
   length = hosArrys.length-1;
 
+//ceshi
 
 /**
  * 每隔2seconds请求一次百度API
