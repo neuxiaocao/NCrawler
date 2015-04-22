@@ -13,12 +13,17 @@ var
   Supplier = require('./app/controllers/SupplierController'),
   Doctor = require('./app/controllers/DoctorController'),
   Index = require('./app/models/Index'),
+  IndexController = require('./app/controllers/IndexController.js'),
   Department = require('./app/controllers/DepartmentController'),
   Faculty = require('./app/controllers/FacultyController'),
   SubFaculty = require('./app/models/SubFaculty'),
   HDF = require("./app/configs/hdf"),
   DiseaseController = require('./app/controllers/DiseaseController.js'),
   ProfileController = require('./app/controllers/ProfileController.js');
+  PROVINCELIST = require('./app/configs/province.js').PROVINCEES,
+  RegionController = require('./app/Controllers/RegionController.js'),
+  DISTINCTDOCIDS = require('./app/configs/distinctDocId.js').docIds,
+  HOSIDS = require('./app/configs/distinctDocId.js').HosIDS;
 
 console.log("Crawler Begin Working....");
 
@@ -27,44 +32,97 @@ console.log("Crawler Begin Working....");
 ////////////////////////////////////////////////////////////////////////
 
 /**
- * 1. 查询并存储北京所有的医院  Hospital
+ * 1. 查询并存储全国所有的医院  Hospital
  */
-
-
-Hospital.getHospitalListByProvince()    //? 需要在此步骤中关省市信息？？？？？？？
+var i = 0;
+var temp ;
+temp = setInterval(function(){
+ if(i==1){
+  clearInterval(temp);
+  return;
+ };
+ Hospital.getHospitalListByProvince(PROVINCELIST[i])
   .then(function(data){
-    console.log("Finish get data.");
-    return Hospital.parseAndStore(data);
-  })
-  .then(function(){
-    console.log("Finish parse and store data.");
-  },function(err){
-    console.log("oooo:" + err);
+   console.log("Finish get data.");
+   ++i;
+   return Hospital.parseAndStore(data);
+  }).then(function(){
+   console.log("Finish parse and store data.");
+  }, function(err){
+   console.log("oooo:" + err);
   });
+},2000);
+
 
 /**
- * 2. 获取所有医院科室  Department
+ * 2. 获取所有医院科室并关联该科室对应的医院信息  Department
  */
-/*Hospital.getHospitalId()
- .then(function (ids) {
- //var ids2 = JSON.parse(JSON.stringify(ids));
- var idsArr = _.pluck(ids, 'id');
- console.log("Hospital list ##### : " + idsArr);
- for (var i = 0; i < idsArr.length; i++) {
- var id = idsArr[i];
+//Hospital.getHospitalId()
+// .then(function(ids){
+//  var i = 0;
+//  //var idsArr = _.pluck(ids, 'id');
+//  //console.log("Hospital list ##### : " + ids);
+//  var temp;
+//  temp = setInterval(function(){
+//   if( i == ids.length){
+//    clearInterval(temp);
+//    return;
+//   };
+//   var id = ids[i];
+//   ++i;
+//   Department.getDepartmentListByHospitalId(id)
+//    .then(function(data){
+//     console.log("Finish get data.");
+//
+//     return Department.parseAndStore(data);
+//    }, function(err){
+//     console.log("oooo:" + err);
+//    });
+//
+//  },1000);
+// });
 
- Department.getDepartmentListByHospitalId(id)
- .then(function (data) {
- console.log("Finish get data.");
- return Department.parseAndStore(data, data.id);
- })
- .then(function () {
- console.log("Finish parse and store data.");
- }, function (err) {
- console.log("oooo:" + err);
- });
- }
- });*/
+
+/**
+ * 将医院的id关联到相应地科室下面，并写入index表 ； hospitalId:科室所属的医院id
+ */
+//Hospital.find({},'id').then(function (hospitals) {
+//  console.log("**********Hospitals Length:"+hospitals.length);
+//  hospitals.forEach(function (hos) {
+//   console.log("######Hospital id is:"+hos.id);
+//   var con = {
+//    hosId: hos.id
+//   };
+//   var updates = {
+//    hospitalId: hos._id
+//   };
+//   return IndexController.update(con,updates).then(function(d){
+//    console.log("Update department hospital id successfully!");
+//   });
+//  })
+//});
+
+
+/**
+ * 将医院的_id写入department表
+ */
+/*Hospital.find({},'id').then(function(hospitals){
+console.log("**********Hospitals Length:"+hospitals.length);
+hospitals.forEach(function(hos){
+
+  var con = {
+  hosId : hos.id
+  };
+  var updates= {
+  hospitalId: hos._id
+  };
+
+  return Department.updateIds(con, updates).then(function(deps){
+   console.log("Success"+deps);
+  });
+})
+});*/
+
 
 /**
  * 3. 查询所有科室医生列表--医生基本信息  DoctorList
@@ -74,27 +132,17 @@ Hospital.getHospitalListByProvince()    //? 需要在此步骤中关省市信息
   .then(function (ids) {
     var idsArr = _.pluck(ids, 'id');
     console.log("##### " + idsArr);
-    *//*for (var i = 0; i < idsArr.length; i++) {
-      var id = idsArr[i];
-      DoctorList.getDoctorListByDepartmentId(id)
-        .then(function (data) {
-          console.log("Finish get data.");
-          return DoctorList.parseAndStore(data, data.departmentId);
-        })
-        .then(function () {
-          console.log("Finish parse and store data.");
-        }, function (err) {
-          console.log("oooo:" + err);
-        });
-    }*//*
-
     var i = 0 ;
     var temp = setInterval(function(){
-      var id = idsArr[i];
-      DoctorList.getDoctorListByDepartmentId(id)
+      if(i == idsArr.length){
+       clearInterval(temp);
+       return;
+      }
+     var data = idsArr[i];
+     ++i;
+      DoctorList.getDoctorListByDepartmentId(data)
         .then(function (data) {
           console.log("Finish get data.");
-          ++i;
           return DoctorList.parseAndStore(data, data.departmentId);
         })
         .then(function () {
@@ -102,36 +150,58 @@ Hospital.getHospitalListByProvince()    //? 需要在此步骤中关省市信息
         }, function (err) {
           console.log("oooo:" + err);
         });
-      if(i==2){
-        console.log('Game over');
-        clearInterval(temp);
-      }
-    }, 4000);
+    },2000);
   });*/
 
 /**
  * 4. 查询所有医生详情   Doctor
+ *    每1s爬取数据一次防止被hdf封锁
  */
-/*DoctorList.getId()
+/*
+DoctorList.getId()
  .then(function (ids) {
  //var ids2 = JSON.parse(JSON.stringify(ids));
-  console.log(ids);
+ // console.log(ids);
   var idsArr = _.pluck(ids, 'id');
-  console.log("##### " + idsArr);
-  for (var i = 0; i < idsArr.length; i++) {
-  var id = idsArr[i];
-  Doctor.getDoctorInfoByDoctorId(id)
-  .then(function(data){
-  console.log("Finish get data.");
-  return Doctor.parseAndStore(data);
-  })
-  .then(function(){
-  console.log("Finish parse and store data.");
-  },function(err){
-  console.log("!!!!!! Error:oooo:" + err);
-  });
- }
- });*/
+  console.log("##### " + idsArr.length);
+  var i = 0;
+  var temp ;
+
+  temp   = setInterval(function(){
+   if(i==idsArr.length){
+    clearInterval(temp);
+    return;
+   };
+   var id = idsArr[i];
+   ++i;
+   Doctor.getDoctorInfoByDoctorId(id)
+    .then(function(data){
+     console.log("Finish get data.");
+
+     return Doctor.parseAndStore(data);
+    })
+    .then(function(){
+     console.log("Finish parse and store data.");
+    },function(err){
+     console.log("!!!!!! Error:oooo:" + err);
+    });
+  },1);
+ //for (var i = 0; i < idsArr.length; i++) {
+ //  var id = idsArr[i];
+ //  Doctor.getDoctorInfoByDoctorId(id)
+ //   .then(function(data){
+ //    console.log("Finish get data.");
+ //    return Doctor.parseAndStore(data);
+ //   })
+ //   .then(function(){
+ //    console.log("Finish parse and store data.");
+ //   },function(err){
+ //    console.log("!!!!!! Error:oooo:" + err);
+ //   });
+ //}
+
+ });
+*/
 
 /**
  * 5. 查询并存储疾病二级科室列表 SubFaculty
@@ -190,7 +260,7 @@ Hospital.getHospitalListByProvince()    //? 需要在此步骤中关省市信息
 /**
  * 8. 关联疾病一级科室 与 二级科室, 批量更新二级科室
  */
-//Faculty.connectFacultyWithSub();  代码中key是否修改为facultyKey?
+//Faculty.connectFacultyWithSub();  //代码中key是否修改为facultyKey?
 //Format batch
 //db.subfaculties.find({}).forEach(function(d){
 //  var key = d.key;
@@ -200,69 +270,66 @@ Hospital.getHospitalListByProvince()    //? 需要在此步骤中关省市信息
 /**
  * 9. 关联疾病一级科室、二级科室 与 疾病
  */
-//Faculty.connectFacSubWithDis();
+//Faculty.connectFacSubWithDis()
 /**
  * 10. 关联疾病一级科室、二级科室、疾病 与 医生 更新医生列表 (关系)
  */
-//DiseaseController.getDiseaseList()
-//  .then(function(list){
-//    //console.log("Finish get disease list")
-//    console.log("length: " + list.length);
-//    //for (var data in list){
-//    var data = -1;
-//    setInterval(function(){
-//      data++;
-//      console.log("********"+data);
-//      var key = list[data].key;
-//      var relation = {
-//        func: 1,
-//        facultyId: list[data].facultyId,
-//        facultyName: list[data].facultyName,
-//        facultyKey: list[data].facultyKey,
-//        subFacultyId: list[data].subFacultyId,
-//        subFacultyName: list[data].subFacultyName,
-//        diseaseId: list[data]._id,
-//        diseaseKey: key,
-//        diseaseName: list[data].name
-//      };
-//      Doctor.getDoctorListByDiseaseKey(key, relation)
-//        .then(function (result){
-//          //console.log("Result return! " + util.inspect(result) );
-//          var doctorList = (JSON.parse(result.data)).content;
-//          var relation = result.relation;
-//          var relationList = [];
-//          var hdfID;
-//          for (var index in doctorList){
-//            hdfID = doctorList[index].id;
-//            //console.log( index + " : id : " + hdfID);
-//            relationList.push(
-//              _.extend(
-//                _.clone(relation), {doctorId: hdfID}));
-//          }
-//          //console.log("==========================data: " + util.inspect(relationList));
-//          return Doctor.create(relationList);
-//        })
-//        .then(function(){
-//          console.log("Create Success");
-//        }, function(err){
-//          console.log("!!!!!!Err: " + err);
-//        });
-//    },3000);
-//    //}
-//  });
+/*DiseaseController.getDiseaseList()
+  .then(function(list){
+    console.log("length: " + list.length);
+    var data = 0 ;
+    var temp = setInterval(function(){
+     if( data == list.length){
+      clearInterval(temp);
+      return;
+     };
+      var key = list[data].key;
+      var relation = {
+        func: 1,
+        facultyId: list[data].facultyId,
+        facultyName: list[data].facultyName,
+        facultyKey: list[data].facultyKey,
+        subFacultyId: list[data].subFacultyId,
+        subFacultyName: list[data].subFacultyName,
+        diseaseId: list[data]._id,
+        diseaseKey: key,
+        diseaseName: list[data].name
+      };
+      ++data;
+      Doctor.getDoctorListByDiseaseKey(key, relation)
+        .then(function (result){
+          var doctorList = (JSON.parse(result.data)).content;
+          var relation = result.relation;
+          var relationList = [];
+          var hdfID;
+          for (var index in doctorList){
+            hdfID = doctorList[index].id;
+            relationList.push(
+              _.extend(
+                _.clone(relation), {doctorId: hdfID}));
+          }
+          return Doctor.create(relationList);
+        })
+        .then(function(){
+          console.log("Create Success");
+        }, function(err){
+          console.log("!!!!!!Err: " + err);
+        });
+    },1000);
+  });*/
 
 /**
  * 11. 新增北京索引
  */
-//Index.create([{
-//  "_id" : ObjectId("54b8bbd551f77c2d2a029402"),
-//  "name" : "北京",
-//  "isDeleted" : false,
-//  "updatedAt" : 1421391992497,
-//  "createdAt" : 1421391992497,
-//  "source" : "zly",
-//  "type" : 1
-//}]);
+/*Index.create([{
+ "_id" : "5509080d8faee0fbe0c4a6de",
+ "name" : "重庆",
+ "isDeleted" : false,
+ "updatedAt" : 1426655247511,
+ "createdAt" : 1426655247511,
+ "source" : "zly",
+ "type" : 1
+}]);*/
 
 /**
  * 12. 关联北京-医院
@@ -272,6 +339,14 @@ Hospital.getHospitalListByProvince()    //? 需要在此步骤中关省市信息
 //  {province:"北京"},
 //  {$set: {provinceId: "54b8bbd551f77c2d2a029402"}},
 //  {multi:true});
+
+//
+// 14. 更新医院信息
+//db.hospitals.update(
+//  {province:"北京"},
+//  {$set: {provinceId: "54b8bbd551f77c2d2a029402"}},
+//  {multi:true});
+
 
 /**
  * 13. 关联医院-科室
@@ -300,24 +375,20 @@ Hospital.getHospitalListByProvince()    //? 需要在此步骤中关省市信息
     }
   });*/
 
-//
-// 14. 更新医院信息
-//db.hospitals.update(
-//  {province:"北京"},
-//  {$set: {provinceId: "54b8bbd551f77c2d2a029402"}},
-//  {multi:true});
 
 //
-// 15. 更新医生关系信息
-//db.doctors.update(
-//  {func:0},
-//  {$set: {func:2, provinceId: "54b8bbd551f77c2d2a029402", provinceName:"北京"}},
-//  {multi:true});
-//
+// 15. 更新医生关系信息  根据省、医院、科室拉出来的数据都是默认func=0, 所以这里面需要批量更新func= 2
+// 在数据库里面执行脚本
+/*db.doctors.update(
+  {func:0},
+  {$set: {func:2, provinceId: "54b8bbd551f77c2d2a029402", provinceName:"北京"}},
+  {multi:true});*/
+
 
 
 /**
  * 16. 通过hdf的id关联地点科室与DoctorRelation
+ * 将 对应的医院、科室信息关联到按照地点索引的医生Document里面
  */
 /*Department.getDepartmentId()
   .then(function(data){
@@ -334,7 +405,7 @@ Hospital.getHospitalListByProvince()    //? 需要在此步骤中关省市信息
         departmentName: hs.name
       };
       console.log("Update doctor: " + util.inspect(updates));
-      Doctor.updateDoctor({func: 2, hospitalFacultyId: hs.id}, updates);   //这里是departmentID吧？
+      Doctor.updateDoctor({func: 2, hospitalFacultyId: hs.id}, updates);
     }
   });*/
 
@@ -621,26 +692,26 @@ Hospital.getHospitalListByProvince()    //? 需要在此步骤中关省市信息
 /**
  * 提取 地点索引 与 医生的关系， 并在doctor中单独存储
  */
-//var conds   = {func : 0};
-//var fields  = "id name hospitalFacultyId hospitalFacultyName hospitalFacultyFullName " +
-//  " hospitalId hospitalName";
-//Doctor.getDoctorInfo(conds, fields)
-//  .then(function(data){
-//    var list = JSON.parse(JSON.stringify(data));
-//    var relations = [];
-//    var relation;
-//    console.log("Length : " + list.length);
-//    for (var i = 0; i < 10 ; i++){
-//      relation = list[i];
-//      delete relation._id;
-//      relations.push(
-//        _.extend(
-//          _.clone(relation),
-//          {func: 2, provinceId: "54b8bbd551f77c2d2a029402", provinceName:"北京"}));
-//    }
-//    //console.log("Data : " + util.inspect(relations));
-//    Doctor.create(relations);
-//  });
+/*var conds   = {func : 0};
+var fields  = "id name hospitalFacultyId hospitalFacultyName hospitalFacultyFullName " +
+  " hospitalId hospitalName";
+Doctor.getDoctorInfo(conds, fields)
+  .then(function(data){
+    var list = JSON.parse(JSON.stringify(data));
+    var relations = [];
+    var relation;
+    console.log("Length : " + list.length);
+    for (var i = 0; i < 10 ; i++){
+      relation = list[i];
+      delete relation._id;
+      relations.push(
+        _.extend(
+          _.clone(relation),
+          {func: 2, provinceId: "54b8bbd551f77c2d2a029402", provinceName:"北京"}));
+    }
+    //console.log("Data : " + util.inspect(relations));
+    Doctor.create(relations);
+  });*/
 //Doctor.changeHdfId2DocMongoId();
 //遍历疾病名 获取医生列表 更新现有医生关联的key
 
@@ -740,3 +811,181 @@ Hospital.getHospitalListByProvince()    //? 需要在此步骤中关省市信息
 //createSupplier();
 //createHptIndex();
 //createDpmIndex();
+/**
+ * 整理按照地区、一二级科室拉出来的医生数据
+ * 首先整理func = 2 [按照地区索引出来的医生数据]
+ */
+/*Doctor.find({func:2}).then(function(data){
+ if(data.length == 0){
+  console.log("Data length equals 0! ")
+  return;
+ };
+
+  var i=0;
+  var temp;
+  temp = setInterval(function(){
+
+   console.log("Data Length"+data.length+"#########"+i);
+   if(i==data.length){
+    clearInterval(temp);
+    return;
+   };
+   var id = data[i].hospitalId;
+   var hospitalSchema = {};
+   var diseaseSchema = {};
+   ++i;
+   Hospital.find({id:id}).then(function(hos){
+    var distrit = hos[0].district+"区";
+    console.log(distrit);
+   });
+  }, 100)
+*//*  if(data[i].hospitalId && data[i].departmentId){
+
+  };*//*
+
+
+
+});*/
+
+/**
+ * 从doctor表里面dictinct func=2[fun=2的医生包含func=1的医生]医生数据，批量创建profile表
+ */
+/*var dosIds = _.values(DISTINCTDOCIDS);
+dosIds.forEach(function(d){
+Doctor.find({doctorId: d, func:2}).then(function(doc){
+  var doctor = JSON.parse(JSON.stringify(doc[0]));
+  //console.log("Doctors :"+ doctor);
+  var profile = {};
+  if(doctor.type != undefined){
+   profile.type = doctor.type;
+   //console.log("#####"+ doctor.type);
+  }
+  if(doctor.sourceType)
+   profile.source = doctor.sourceType;
+  if(doctor.createdAt)
+   profile.createdAt = doctor.createdAt;
+  if(doctor.updatedAt)
+   profile.updatedAt = doctor.updatedAt;
+  if(doctor.isDeleted != undefined)
+   profile.isDeleted = doctor.isDeleted;
+  if(doctor.name)
+   profile.name = doctor.name;
+  if(doctor.alias)
+   profile.alias = doctor.alias;
+  if(doctor.pinyin)
+   profile.pinyin = doctor.pinyin;
+  if(doctor.avatar)
+   profile.avatar =doctor.avatar;
+  if(doctor.sex)
+   profile.sex = doctor.sex;
+  if(doctor.doctorIntro)
+   profile.doctorIntro = doctor.doctorIntro;
+  if(doctor.contact)
+   profile.contact = doctor.contact;
+  if(doctor.address)
+   profile.address = doctor.address;
+  if(doctor.position)
+   profile.position = doctor.position;
+  if(doctor.fullGrade)
+   profile.fullGrade = doctor.fullGrade;
+  if(doctor.specialize)
+   profile.specialize = doctor.specialize;
+  if(doctor.practicingNumber)
+   profile.practicingNumber =doctor.practicingNumber;
+  if(doctor.descriptionImages)
+   profile.descriptionImages = doctor.descriptionImages;
+  if(doctor.descriptionTags)
+   profile.descriptionTags = doctor.descriptionTags;
+  if(doctor.searchTags)
+   profile.searchTags = doctor.searchTags;
+  if(doctor.eduBackground)
+   profile.eduBackground = doctor.eduBackground;
+  if(doctor.brokerActiveNum)
+   profile.brokerActiveNum = doctor.brokerActiveNum;
+  if(doctor.serviceActiveNum)
+   profile.serviceActiveNum = doctor.serviceActiveNum;
+  if(doctor.brokerId)
+   profile.brokerId = doctor.brokerId;
+  if(doctor.checkStatus != undefined)
+   profile.checkStatus = doctor.checkStatus;
+  if(doctor.failReason)
+   profile.failReason = doctor.failReason;
+  if(doctor.hdfId)
+   profile.hdfId = doctor.hdfId;
+  if(doctor.doctorNo)
+   profile.doctorNo = doctor.doctorNo;
+  if(doctor.hospitalFacultyId != undefined)
+   profile.hospitalFacultyId = doctor.hospitalFacultyId;
+  if(doctor.doctorId != undefined)
+   profile.doctorId = doctor.doctorId;
+  return Doctor.CreateProfile(profile).then(function(d){
+   console.log("Create Success!")
+  });
+});
+});*/
+
+
+/**
+ * 基于医院id查找对应的区域信息，然后查找医院对应的科室列表，
+ * 基于每一个科室下面的医生列表更新profile表relatedHospital字段
+ */
+//_.values(HOSIDS).forEach(function(hospital){
+//RegionController.find(hospital).then(function(region){
+//  var body = region.body;
+//  var districId = body._id;
+//  var districtName = body.name;
+//  var hospitalId = region.hos.id;
+//
+//  Department.find({hosId:hospitalId}).then(function(deps){
+//
+//   console.log(deps.length);
+//   deps.forEach(function(dep){
+//   var data = {
+//     provinceId: dep.provinceId,
+//     provinceName: dep.provinceName,
+//     districtId: districId,
+//     districtName: districtName,
+//     hospitalId: dep.hospitalId,
+//     hospitalName: dep.hospitalName,
+//     departmentId: dep._id,
+//     departmentName: dep.name
+//   };
+//
+//   return Doctor.updateDoctorProfileRelatedHospital({hospitalFacultyId:dep.id},data).then(function(d){
+//   console.log("Add relatedHospital Success!");
+//   });
+//   });
+//  })
+//});
+//});
+
+
+/**
+ * 查找func = 1[疾病索引出来]的医生信息，然后更新对应profile表relatedDisease字段
+ */
+var i = 0;
+Doctor.getDisDoctorIds('doctorId',{func:1}).then(function(docs){
+console.log(" *******Distinct Doc length:"+ docs.length);
+_.values(docs).forEach(function(id){
+  return Doctor.find({doctorId: id, func:1}).then(function(doctors){
+   console.log("Doctor length########"+ doctors.length);
+   doctors.forEach(function(doc){
+    var data = {
+     facultyId: doc.facultyId,
+     facultyName: doc.facultyName,
+     subFacultyId: doc.subFacultyId,
+     subFacultyName: doc.subFacultyName,
+     diseaseId: doc.diseaseId,
+     diseaseName: doc.diseaseName
+    };
+
+    return Doctor.updateDoctorProfileRelatedDisease({doctorId:doc.doctorId},data)
+     .then(function(d){
+      ++i;
+     console.log("Add RelatedDisease Success!"+ i);
+    });
+   });
+  });
+});
+});
+

@@ -13,7 +13,7 @@ var
   MYSQL_UT_URL = "localhost",
   MYSQL_TEST_URL = "localhost",
   NODE_ENV = process.env.NODE_ENV;
-
+  hdf_test = 'mongodb://ZLY-TEST/' + db,
 module.exports = {
 
   dbPort: 27017,
@@ -22,7 +22,8 @@ module.exports = {
   //本机开发配置
   dbUrl_test: 'mongodb://localhost/zlyweb',
 
-  dbUrl: NODE_ENV == 'production' ? dbUrl_production : NODE_ENV == 'test' ? dbUrl_ut : dbUrl_test,
+  //dbUrl: NODE_ENV == 'production' ? dbUrl_production : NODE_ENV == 'test' ? dbUrl_ut : dbUrl_test,
+  dbUrl: NODE_ENV == 'production' ? dbUrl_production : NODE_ENV == 'test' ? dbUrl_ut : NODE_ENV == 'hdf' ? hdf_test :dbUrl_test,
   port: 3000,
   secret: 'wecare',
 

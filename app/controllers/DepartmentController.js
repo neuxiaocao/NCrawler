@@ -15,17 +15,17 @@ var
  * 查询某个地区下面的所有医院列表
  *
  */
-exports.getDepartmentListByHospitalId = function (hospitalId) {
+exports.getDepartmentListByHospitalId = function (hos) {
 
   var deferred = Q.defer();
-  if (hospitalId == undefined){
+  if (hos == undefined){
     return;
   }
 
   var path = HDF.getHospitalFacultyListByHospitalId;
   var queryString =
     _.reduce(
-      _.map(_.extend(HDF.query, {hospitalId: hospitalId}),
+      _.map(_.extend(HDF.query, {hospitalId: hos.id}),
         function (value, key) {
           return key + "=" + value;
         }),
@@ -47,16 +47,16 @@ exports.getDepartmentListByHospitalId = function (hospitalId) {
         console.log("ReqError:"+error);
         deferred.resolve("");
       }
-      console.log("id:" + hospitalId)
+      //console.log("id:" + hospitalId)
       body = JSON.parse(body);
-      body.id = hospitalId;
-      deferred.resolve(body);
+     // body.id = hospitalId;
+      deferred.resolve({body:body,hospital: hos});
     });
 
   return deferred.promise;
 };
 
-exports.getDepartmentId = function () {
+exports.getDepartmentId = function (index) {
   return Department.find({}, "id name provinceId provinceName hospitalId hospitalName").exec();
 };
 
@@ -73,20 +73,23 @@ exports.getDepartmentListByHospitalIdAndUpdate = function (hospitalId, updates) 
  * @param json
  * @returns {*}
  */
-exports.parseAndStore = function (json, id){
+exports.parseAndStore = function (json){
+  var id = json.hospital.id;
   console.log("Begin data parse and store function. " + id);
   var deferred = Q.defer();
-  var content = json.content;
 
+
+  var content = json.body.content;
   if (id == undefined){
     console.log("id is undefined");
     return;
   }
-  console.log("content:" + content.length);
+  console.log("content:" + content);
   if (content.length > 0){
-    for(var i =0; i<content.length; i++){
-      _.extend(content[i], {hospitalId: id});
-    }
+    content = _.forEach(content, function(d){
+    return _.extend(d, {hospitalId: id,hospitalName: json.hospital.name, provinceName: json.hospital.provinceName, provinceId: json.hospital.provinceId});
+   });
+
     return Department.create(content)
       .then(function (result) {
         //console.log("Create success: " + result);
@@ -131,3 +134,9 @@ exports.create = function(spl){
 //    }
 //  ]
 //}
+
+
+exports.updateIds = function(conds, updates){
+ //console.log("Conds:"+ JSON.stringify(conds) +";Updates:"+JSON.stringify(updates));
+return Department.update(conds,{'$set':updates},{multi:true}).exec();
+};

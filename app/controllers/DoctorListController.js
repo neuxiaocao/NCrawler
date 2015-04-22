@@ -54,7 +54,11 @@ exports.getDoctorListByDepartmentId = function (departmentId) {
       if (error) {
         console.log("!!!!!ReqError: "+error);
         deferred.resolve('');
-      }
+      };
+
+      console.log("departmentId:" + departmentId);
+      body = JSON.parse(body);
+      body.departmentId = departmentId;
       deferred.resolve(body);
     })
     .on('data', function (data) {
@@ -78,8 +82,7 @@ exports.parseAndStore = function (json, departmentId) {
   console.log("Begin data parse and store function. " + json.length);
 
   var deferred = Q.defer();
-  var raw = JSON.parse(json);
-  var content = raw.content;
+  var content = json.content;
   console.log("content:" + content.length);
   if (content.length > 0) {
     for (var i = 0; i < content.length; i++) {

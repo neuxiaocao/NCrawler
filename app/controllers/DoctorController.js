@@ -11,6 +11,7 @@ var
   Q = require("q"),
   _ = require('underscore'),
   Doctor = require('../models/Doctor'),
+  DoctorProfile = require('../models/DoctorProfile.js')
   Disease = require('../models/Disease');
 
 var
@@ -109,7 +110,7 @@ exports.getDoctorListByDiseaseKey = function (key, relation) {
   var path = HDF.getDoctorListByDiseaseKey;
   var queryString =
     _.reduce(
-      _.map(_.extend(HDF.query, {diseaseKey: key,pageSize:10000, pageId:1,province:'北京'}),
+      _.map(_.extend(HDF.query, {diseaseKey: key,pageSize:10000, pageId:1,province:'重庆'}),
         function (value, key) {
           return key + "=" + value;
         }),
@@ -163,7 +164,46 @@ exports.getDoctorInfo = function (conds,fields) {
   return Doctor.find(conds,fields).exec();
 };
 
+
+exports.getDisDoctorIds = function(fileds, conds){
+ return Doctor.distinct(fileds, conds).exec();
+};
+
 exports.updateDoctor = function (conds, updates) {
   //console.log("Begin");
   return Doctor.update(conds, updates, {multi: true}).exec();
+};
+
+exports.CreateProfile = function(data){
+// console.log( typeof data);
+   return DoctorProfile.create(data);
+};
+
+
+exports.findDoctorProfile = function(data){
+// console.log( typeof data);
+ return DoctorProfile.find(data);
+};
+
+/**
+ * 更新profile表relatedHospital字段
+ * @param conds
+ * @param updates
+ * @returns {Promise|Array|{index: number, input: string}}
+ */
+exports.updateDoctorProfileRelatedHospital = function (conds, updates) {
+ //console.log("Begin");
+ return DoctorProfile.update(conds, {'$push':{"relatedHospital": updates}}, {multi: true}).exec();
+};
+
+/**
+ * 更新profile表relatedDisease字段
+ * @param conds
+ * @param updates
+ * @returns {Promise|Array|{index: number, input: string}}
+ */
+exports.updateDoctorProfileRelatedDisease = function (conds, updates) {
+ //console.log("Begin");
+ //console.log("Conds:"+ JSON.stringify(conds)+ "; Updates:"+ JSON.stringify(updates));
+ return DoctorProfile.update(conds, {'$push':{"relatedDisease": updates}}, {multi: true}).exec();
 };

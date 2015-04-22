@@ -5,6 +5,7 @@
  *  Copyright (c) 2014 ZLYCare. All rights reserved.
  */
 var
+  util = require("util"),
   HDF = require("../configs/hdf"),
   request = require('request'),
   Q = require("q"),
@@ -20,11 +21,11 @@ exports.getHospitalListByProvince = function (province) {
 
   console.log("Begin getHospitalListByProvince");
   var deferred = Q.defer();
-  province = province || '北京';
+  alias = province.alias;
   var path = HDF.getHospitalListByProvince;
   var queryString =
     _.reduce(
-      _.map(_.extend(HDF.query, {province: province}),
+      _.map(_.extend(HDF.query, {province: alias}),
         function (value, key) {
           return key + "=" + value;
         }),
@@ -46,7 +47,7 @@ exports.getHospitalListByProvince = function (province) {
         console.log(error);
         deferred.resolve('');
       }
-      deferred.resolve(body);
+      deferred.resolve({body:body,province: province});
     })
     .on('data', function(data) {
       // decompressed data as it is received
@@ -56,7 +57,7 @@ exports.getHospitalListByProvince = function (province) {
 };
 
 exports.getHospitalId = function () {
-  return Hospital.find({}, "id name provinceId province").exec();
+  return Hospital.find({}, "id name provinceId province provinceName ").exec();
 };
 
 /**
@@ -67,8 +68,14 @@ exports.getHospitalId = function () {
 exports.parseAndStore = function (json){
   console.log("Begin data parse and store function. " + json.length);
   var deferred = Q.defer();
-  var raw = JSON.parse(json);
+  var raw = JSON.parse(json.body);
+  var province = json.province;
   var rawContent = raw.content;
+  console.log(util.inspect(province));
+  rawContent = _.each(rawContent, function(d){
+  return _.extend(d,{provinceName:province.name, provinceId: province.id});
+ });
+
   console.log("content:" + rawContent.length);
   if (rawContent.length > 0){
     return Hospital.create(rawContent)
@@ -91,6 +98,7 @@ exports.parseAndStore = function (json){
 exports.find = function (con, fields){
   return Hospital.find(con, fields).exec();
 };
+
 
 exports.create = function(spl){
   return Hospital.create(spl);
@@ -115,3 +123,4 @@ exports.create = function(spl){
 //    }
 //  ]
 //}
+
