@@ -28,6 +28,8 @@ var indexSchema = new Schema({
   provinceId: String,//
   provinceName: String,//原province
   district: String,   //地区名,例如: 海淀区
+  districtId: String,
+  districtName: String,
   grade: Number,      //医院评级:  6-三级甲等; 5-三级; 4-二级甲等; 3-二级; 2-一级甲等; 1-一级; 0-未评定等级医院;
   featuredFaculties: String,//医院特色: 综合、神经外科
   gps: [Number,Number],//经纬度

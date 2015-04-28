@@ -53,7 +53,7 @@ exports.getDoctorInfoByDoctorId = function (doctorId) {
       , gzip: true
     },
     function (error, response, body) {
-      console.log("statusCode" + response.statusCode);
+     // console.log("statusCode" + response.statusCode);
       if (error) {
         console.log("!!!!!! Req Error:" + error);
         deferred.resolve('');
@@ -110,7 +110,7 @@ exports.getDoctorListByDiseaseKey = function (key, relation) {
   var path = HDF.getDoctorListByDiseaseKey;
   var queryString =
     _.reduce(
-      _.map(_.extend(HDF.query, {diseaseKey: key,pageSize:10000, pageId:1,province:'重庆'}),
+      _.map(_.extend(HDF.query, {diseaseKey: key,pageSize:10000, pageId:1,province:'浙江'}),
         function (value, key) {
           return key + "=" + value;
         }),

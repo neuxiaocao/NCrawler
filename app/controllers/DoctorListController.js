@@ -21,52 +21,55 @@ var
  * @param departmentId  科室id
  *
  */
-exports.getDoctorListByDepartmentId = function (departmentId) {
+exports.getDoctorListByDepartmentId = function (data) {
   console.log("Begin getDoctorListByDepartmentId");
 
+  var departmentId = data.id;
+
   if (departmentId == undefined) {//TODO 测试下，是否可以当id为undefined时返回所有科室医生信息？
-    return;
+  return;
   }
 
   var deferred = Q.defer();
   var path = HDF.getDoctorListByDepartmentId;
   var queryString =
-    _.reduce(
-      _.map(_.extend(HDF.query, {pageSize: pageSize, hospitalFacultyId: departmentId, pageId: pageId}),
-        function (value, key) {
-          return key + "=" + value;
-        }),
-      function (memo, value) {
-        return memo + "&" + value;
-      });
+  _.reduce(
+  _.map(_.extend(HDF.query, {pageSize: pageSize, hospitalFacultyId: departmentId, pageId: pageId}),
+  function (value, key) {
+  return key + "=" + value;
+  }),
+  function (memo, value) {
+  return memo + "&" + value;
+  });
   var url = HDF.host + path + queryString;
 
   console.log("QueryString: " + url);
 
   request(
-    {
-      method: 'GET'
-      , uri: url
-      , gzip: true
-    },
-    function (error, response, body) {
-      console.log("statusCode" + response.statusCode);
-      if (error) {
-        console.log("!!!!!ReqError: "+error);
-        deferred.resolve('');
-      };
+  {
+  method: 'GET'
+  , uri: url
+  , gzip: true
+  },
+  function (error, response, body) {
+  //console.log("statusCode" + response.statusCode);
+  if (error) {
+  console.log("!!!!!ReqError: "+error);
+  deferred.resolve('');
+  };
 
-      console.log("departmentId:" + departmentId);
-      body = JSON.parse(body);
-      body.departmentId = departmentId;
-      deferred.resolve(body);
-    })
-    .on('data', function (data) {
-      // decompressed data as it is received
-      console.log('decoded chunk: ' + data.length);
-    });
+  console.log("departmentId:" + departmentId);
+  body = JSON.parse(body);
+  body.departmentId = data._id;
+  deferred.resolve(body);
+  })
+  .on('data', function (data) {
+  // decompressed data as it is received
+  console.log('decoded chunk: ' + data.length);
+  });
 
   return deferred.promise;
+
 };
 
 exports.getId = function () {

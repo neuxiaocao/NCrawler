@@ -8,7 +8,8 @@ var Index = require('../models/Index.js');
   return Index.find(con, fields);
  }
 
-exports.update = function(conds, updates){
+/*
+update.update = function(conds, updates){
  console.log("Conds:"+ JSON.stringify(conds) +";Updates:"+ JSON.stringify(updates));
  //return Index.update(conds,{'$set':updates},{multi: true}).exec();
-}
+}*/

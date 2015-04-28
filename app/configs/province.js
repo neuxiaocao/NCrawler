@@ -39,8 +39,7 @@ module.exports = {
   {"id":"5509080d8faee0fbe0c4a6ea","name":"澳门特别行政区",   "alias":"澳门"},
   {"id":"5509080d8faee0fbe0c4a6de","name":"重庆市",   "alias":"重庆"}
  */
-
-  {"id":"5509080d8faee0fbe0c4a6d7","name":"山东省",   "alias":"山东"}
+  {"id":"5509080d8faee0fbe0c4a6cb","name":"河北省",   "alias":"河北"}
  ]
 };
 

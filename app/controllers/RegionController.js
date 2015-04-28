@@ -7,10 +7,11 @@ var Region = require('../models/Region.js'),
  _ = require('underscore');
 
 exports.find = function(hos){
- var name = hos.district+"区";
+ var name = hos.district+"市";
  var deferred = Q.defer();
+
  return Region.find({name:name}).exec()
-  .then(function(r){
+ .then(function(r){
    if(!r){
     console.log("*******No this region******");
     deferred.resolve("");
@@ -18,8 +19,8 @@ exports.find = function(hos){
 
    deferred.resolve({body: r[0], hos:hos});
    return deferred.promise;
-  }, function(err){
+ }, function(err){
    deferred.reject(err);
    return deferred.promise;
-  });
+ });
 };

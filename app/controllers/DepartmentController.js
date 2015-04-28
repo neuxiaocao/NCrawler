@@ -74,7 +74,7 @@ exports.getDepartmentListByHospitalIdAndUpdate = function (hospitalId, updates) 
  * @returns {*}
  */
 exports.parseAndStore = function (json){
-  var id = json.hospital.id;
+  var id = json.hospital._id;
   console.log("Begin data parse and store function. " + id);
   var deferred = Q.defer();
 
