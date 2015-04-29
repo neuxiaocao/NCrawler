@@ -110,7 +110,7 @@ exports.getDoctorListByDiseaseKey = function (key, relation) {
   var path = HDF.getDoctorListByDiseaseKey;
   var queryString =
     _.reduce(
-      _.map(_.extend(HDF.query, {diseaseKey: key,pageSize:10000, pageId:1,province:'浙江'}),
+      _.map(_.extend(HDF.query, {diseaseKey: key,pageSize:10000, pageId:1,province:'河北'}),
         function (value, key) {
           return key + "=" + value;
         }),
