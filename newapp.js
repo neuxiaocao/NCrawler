@@ -21,7 +21,7 @@ var
   DiseaseController = require('./app/controllers/DiseaseController.js'),
   ProfileController = require('./app/controllers/ProfileController.js');
   PROVINCELIST = require('./app/configs/province.js').PROVINCEES,
-  RegionController = require('./app/Controllers/RegionController.js'),
+  RegionController = require('./app/controllers/RegionController.js'),
   DISTINCTDOCIDS = require('./app/configs/distinctDocId.js').docIds,
   HOSIDS = require('./app/configs/distinctDocId.js').HosIDS,
   Region = require('./app/models/Region.js');
