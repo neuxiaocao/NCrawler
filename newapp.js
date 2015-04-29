@@ -36,7 +36,7 @@ console.log("Crawler Begin Working....");
  * 1. 查询并存储全国所有的医院  Hospital
  * Tip:  将PROVINCELIST[i]修改为对应省得信息
  */
-/*var i = 0;
+var i = 0;
 var temp ;
 temp = setInterval(function(){
 if(i==1){
@@ -53,7 +53,7 @@ Hospital.getHospitalListByProvince(PROVINCELIST[i])
   }, function(err){
    console.log("oooo:" + err);
   });
-},500);*/
+},500);
 
 
 
@@ -272,57 +272,57 @@ Hospital.getHospitalListByProvince(PROVINCELIST[i])
  * 直辖市，例如：北京市，去掉-市
  * 省份，例如：山东省，去掉-省
  */
-DiseaseController.getDiseaseList()
-  .then(function(list){
-    console.log("length: " + list.length);
-    var data = 0 ;
-    var temp = setInterval(function(){
-     if( data == list.length){
-      clearInterval(temp);
-      return;
-     };
-      var key = list[data].key;
-      var relation = {
-        func: 1,
-        facultyId: list[data].facultyId,
-        facultyName: list[data].facultyName,
-        facultyKey: list[data].facultyKey,
-        subFacultyId: list[data].subFacultyId,
-        subFacultyName: list[data].subFacultyName,
-        diseaseId: list[data]._id,
-        diseaseKey: key,
-        diseaseName: list[data].name
-      };
-      ++data;
-      Doctor.getDoctorListByDiseaseKey(key, relation)
-        .then(function (result){
-          var doctorList = (JSON.parse(result.data)).content;
-          var relation = result.relation;
-          var relationList = [];
-          var hdfID;
-          for (var index in doctorList){
-            hdfID = doctorList[index].id;
-            relationList.push(
-              _.extend(
-                _.clone(relation), {doctorId: hdfID}));
-          }
-          return Doctor.create(relationList);
-        })
-        .then(function(){
-          console.log("Create Success");
-        }, function(err){
-          console.log("!!!!!!Err: " + err);
-        });
-    },100);
-  });
+//DiseaseController.getDiseaseList()
+//  .then(function(list){
+//    console.log("length: " + list.length);
+//    var data = 0 ;
+//    var temp = setInterval(function(){
+//     if( data == list.length){
+//      clearInterval(temp);
+//      return;
+//     };
+//      var key = list[data].key;
+//      var relation = {
+//        func: 1,
+//        facultyId: list[data].facultyId,
+//        facultyName: list[data].facultyName,
+//        facultyKey: list[data].facultyKey,
+//        subFacultyId: list[data].subFacultyId,
+//        subFacultyName: list[data].subFacultyName,
+//        diseaseId: list[data]._id,
+//        diseaseKey: key,
+//        diseaseName: list[data].name
+//      };
+//      ++data;
+//      Doctor.getDoctorListByDiseaseKey(key, relation)
+//        .then(function (result){
+//          var doctorList = (JSON.parse(result.data)).content;
+//          var relation = result.relation;
+//          var relationList = [];
+//          var hdfID;
+//          for (var index in doctorList){
+//            hdfID = doctorList[index].id;
+//            relationList.push(
+//              _.extend(
+//                _.clone(relation), {doctorId: hdfID}));
+//          }
+//          return Doctor.create(relationList);
+//        })
+//        .then(function(){
+//          console.log("Create Success");
+//        }, function(err){
+//          console.log("!!!!!!Err: " + err);
+//        });
+//    },100);
+//  });
 
 /**
  * 11. 新增北京索引
  *     在region表找到对应的地区信息
  */
 /*Index.create([{
-"_id" : "5509080d8faee0fbe0c4a6d3",
-"name" : "浙江",
+"_id" : "5509080d8faee0fbe0c4a6cb",
+"name" : "河北",
 "isDeleted" : false,
 "updatedAt" : 1426655247511,
 "createdAt" : 1426655247511,
@@ -388,7 +388,7 @@ DiseaseController.getDiseaseList()
         将provinceId 和 provinceName修改为对应的省*/
 /*db.doctors.update(
 {func:0},
-{$set: {func:2, provinceId: "5509080d8faee0fbe0c4a6d3", provinceName:"浙江"}},
+{$set: {func:2, provinceId: "5509080d8faee0fbe0c4a6cb", provinceName:"河北"}},
 {multi:true});*/
 
 
@@ -960,8 +960,7 @@ Doctor.getDoctorInfo(conds, fields)
  * 当拉取直辖市数据的时候：
  *  RegionController 里面需拼接：朝阳区
  */
-/*
-Hospital.find({},'_id id district').then(function(hospitals){
+/*Hospital.find({},'_id id district').then(function(hospitals){
 hospitals.forEach(function(hospital){
   console.log(hospital);
 RegionController.find(hospital).then(function(region){
@@ -1030,12 +1029,11 @@ _.values(docs).forEach(function(id){
  * 2. 将医院关联到相应地地区下面
  * tip:  Region表查出对应省的privinceId
  */
-/*
-var privinceId = "5509080d8faee0fbe0c4a6d3";
+/*var privinceId = "5509080d8faee0fbe0c4a6d1";
 
 Region.find({type:2,"provinceId" : privinceId}).exec().then(function(rs){
 rs.forEach(function(r){
-  var disName = r.name.substring(0,2);
+  var disName = r.name.substring(0, r.name.length-1);
   var disId = r._id;
   console.log("DisName:"+disName+";disId:"+disId);
   var updates = {
