@@ -1,8 +1,6 @@
 /**
  *  名医汇  数据拉取
  *  NCrawler
- *  Created by Jacky.L on 2/2/15.
- *  Copyright (c) 2014 ZLYCare. All rights reserved.
  */
 
 //var data = {};

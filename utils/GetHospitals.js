@@ -1,9 +1,6 @@
 /**
  *
  *  地址解析，显示医院对应的经纬度
- *  NCrawler
- *  Created by Jacky.L on 1/29/15.
- *  Copyright (c) 2014 ZLYCare. All rights reserved.
  */
 
 var Hospital = require('../app/models/Hospital.js'),

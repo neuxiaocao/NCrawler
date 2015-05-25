@@ -1,8 +1,6 @@
 /**
  *  db
  *  文档数据库基本配置
- *  Created by Jacky.L on 4/16/14.
- *  Copyright (c) 2014 ZLYCare. All rights reserved.
  */
 var mongoose = require('mongoose');
 var settings = require('./server');

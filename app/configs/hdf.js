@@ -2,8 +2,6 @@
  *  好大夫基本配置
  *
  *  NCrawler
- *  Created by Jacky.L on 1/12/15.
- *  Copyright (c) 2014 ZLYCare. All rights reserved.
  */
 module.exports = {
   host: 'http://mobile-api.haodf.com/',

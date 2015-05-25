@@ -1,8 +1,6 @@
 /**
  *  logger
  *  日志输出
- *  Created by Jacky.L on 4/20/14.
- *  Copyright (c) 2014 ZLYCare. All rights reserved.
  */
 var log4js = require('log4js');
 var defaultCategory = 'default';

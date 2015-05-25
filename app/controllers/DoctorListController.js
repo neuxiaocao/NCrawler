@@ -1,8 +1,6 @@
 /**
  *
  *  NCrawler
- *  Created by Jacky.L on 1/12/15.
- *  Copyright (c) 2014 ZLYCare. All rights reserved.
  */
 var
   HDF = require("../configs/hdf"),

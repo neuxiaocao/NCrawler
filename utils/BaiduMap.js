@@ -2,9 +2,6 @@
  *
  *  地址解析，显示医院对应的经纬度
  *  由于百度对频繁的批量API调用，所以使用senInterval()函数每隔2秒发送一个http REST请求
- *  NCrawler
- *  Created by Jacky.L on 1/29/15.
- *  Copyright (c) 2014 ZLYCare. All rights reserved.
  *  地址解析：http://api.map.baidu.com/geocoder?address=北大医院&output=json&coord_type=bd09ll
  *  反向地址解析：http://api.map.baidu.com/geocoder?location=39.937968,116.386391&coord_type=bd09ll&output=html
  */
