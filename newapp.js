@@ -36,7 +36,8 @@ console.log("Crawler Begin Working....");
  * 1. 查询并存储全国所有的医院  Hospital
  * Tip:  将PROVINCELIST[i]修改为对应省得信息
  */
-/*var i = 0;
+/*
+var i = 0;
 var temp ;
 temp = setInterval(function(){
 if(i==1){
@@ -53,12 +54,15 @@ Hospital.getHospitalListByProvince(PROVINCELIST[i])
   }, function(err){
    console.log("oooo:" + err);
   });
-},500);*/
+},100);
+*/
+
 
 /**
  * 2. 获取所有医院科室并关联该科室对应的医院信息  Department
  */
-/*Hospital.getHospitalId()
+/*
+Hospital.getHospitalId()
 .then(function(ids){
   var i = 0;
   //var idsArr = _.pluck(ids, 'id');
@@ -80,14 +84,15 @@ Hospital.getHospitalListByProvince(PROVINCELIST[i])
      console.log("oooo:" + err);
     });
 
-  },500);
-});*/
-
+  },1);
+});
+*/
 
 /**
  * 3. 查询所有科室医生列表--医生基本信息  DoctorList
  *   每四秒 call 一次hdf api，防治ip被封锁
 */
+/*
 Department.getDepartmentId()
   .then(function (ids) {
    // var idsArr = _.pluck(ids, 'id');
@@ -110,13 +115,16 @@ Department.getDepartmentId()
         }, function (err) {
           console.log("oooo:" + err);
         });
-    },200);
+    },10);
   });
+*/
+
 /**
  * 4. 查询所有医生详情   Doctor
  *    每1s爬取数据一次防止被hdf封锁
  */
-/*DoctorList.getId()
+/*
+DoctorList.getId()
   .then(function (ids) {
 //var ids2 = JSON.parse(JSON.stringify(ids));
 // console.log(ids);
@@ -143,10 +151,9 @@ Department.getDepartmentId()
       },function(err){
        console.log("!!!!!! Error:oooo:" + err);
       });
-    },100);
-  });*/
-
-
+    },1);
+  });
+*/
 
 ////////////////////////////////////////////////////////////////////////
 //////////////////////// 关系数据抓取、整理 ///////////////////////////////
@@ -160,7 +167,8 @@ Department.getDepartmentId()
  * 直辖市，例如：北京市，去掉-市
  * 省份，例如：山东省，去掉-省
  */
-/*DiseaseController.getDiseaseList()
+/*
+DiseaseController.getDiseaseList()
   .then(function(list){
     console.log("length: " + list.length);
     var data = 0 ;
@@ -201,23 +209,24 @@ Department.getDepartmentId()
         }, function(err){
           console.log("!!!!!!Err: " + err);
         });
-    },100);
+    },1);
   });*/
 
 /**
  * 11. 新增北京索引
  *     在region表找到对应的地区信息
  */
-/*Index.create([{
-"_id" : "5509080d8faee0fbe0c4a6ce",
-"name" : "辽宁省",
+/*
+Index.create([{
+"_id" : "5509080d8faee0fbe0c4a6df",
+"name" : "四川省",
 "isDeleted" : false,
 "updatedAt" : 1426655247511,
 "createdAt" : 1426655247511,
 "source" : "zly",
 "type" : 1
-}]);*/
-
+}]);
+*/
 
 
 /*
@@ -237,7 +246,8 @@ Department.getDepartmentId()
  * 16. 通过hdf的id关联地点科室与DoctorRelation
  * 将 对应的医院、科室信息关联到按照地点索引的医生Document里面
  */
-/*Department.getDepartmentId()
+/*
+Department.getDepartmentId()
   .then(function(data){
     var list = JSON.parse(JSON.stringify(data));
     console.log("#####" + list.length);
@@ -254,13 +264,13 @@ Department.getDepartmentId()
       console.log("Update doctor: " + util.inspect(updates));
       Doctor.updateDoctor({func: 2, hospitalFacultyId: hs.id}, updates);
     }
-  });*/
-
-
+  });
+*/
 /**
  * 21.2 Index合并表操作 Hospital
  */
-/*Hospital.find({},
+/*
+Hospital.find({},
   "_id id name district gps doctorCount grade featuredFaculties provinceId provinceName " +
     " caseDoctorCount bookingDoctorCount ")
   .then(function(data){
@@ -283,10 +293,12 @@ Department.getDepartmentId()
     console.log("!!!!!!!Err:"+err);
   });*/
 
+
 ///**
 // * 21.3 Index合并表操作 Department
 // */
-/*Department.find({},
+/*
+Department.find({},
   "_id id provinceId provinceName hospitalId hospitalName name doctorCount " +
     " category order caseDoctorCount bookingDoctorCount ")
   .then(function(data){
@@ -304,16 +316,18 @@ Department.getDepartmentId()
     Index.create(newList);
   });*/
 
+
 /**
  * 从doctor表里面dictinct func=2[fun=2的医生包含func=1的医生]医生数据，批量创建profile表
  * 数据库查找对应的dosIds
  */
-/*Doctor.getDisDoctorIds('doctorId',{func:2}).then(function(dosIds){
- //var dosIds = _.values(DISTINCTDOCIDS);
+/*
+Doctor.getDisDoctorIds('doctorId',{func:2}).then(function(dosIds){
+ var dosIds = _.values(DISTINCTDOCIDS);
  dosIds.forEach(function(d){
    Doctor.find({doctorId: d, func:2}).then(function(doc){
     var doctor = JSON.parse(JSON.stringify(doc[0]));
-    //console.log("Doctors :"+ doctor);
+    console.log("Doctors :"+ doctor);
     var profile = {};
     if(doctor.type != undefined){
      profile.type = doctor.type;
@@ -384,8 +398,8 @@ Department.getDepartmentId()
     });
    });
  });
- });*/
-
+ });
+*/
 
 /**
  * 基于医院id查找对应的区域信息，然后查找医院对应的科室列表，
@@ -396,7 +410,8 @@ Department.getDepartmentId()
  * 当拉取直辖市数据的时候：
  *  RegionController 里面需拼接：朝阳区
  */
-/*Hospital.find({},'_id id district').then(function(hospitals){
+/*
+Hospital.find({},'_id id district').then(function(hospitals){
 hospitals.forEach(function(hospital){
   console.log(hospital);
 RegionController.find(hospital).then(function(region){
@@ -427,12 +442,14 @@ RegionController.find(hospital).then(function(region){
 })
 });
 });
-});*/
+});
+*/
 
 /**
  * 查找func = 1[疾病索引出来]的医生信息，然后更新对应profile表relatedDisease字段
  */
-/*var i = 0;
+/*
+var i = 0;
 Doctor.getDisDoctorIds('doctorId',{func:1}).then(function(docs){
 console.log(" *******Distinct Doc length:"+ docs.length);
 _.values(docs).forEach(function(id){
@@ -456,14 +473,15 @@ _.values(docs).forEach(function(id){
    });
   });
 });
-});*/
+});
+*/
 
 /**
  *
  * 2. 将医院关联到相应地地区下面
  * tip:  Region表查出对应省的privinceId
  */
-/*var privinceId = "5509080d8faee0fbe0c4a6ce";
+/*var privinceId = "5509080d8faee0fbe0c4a6d2";
 
 Region.find({type:2,"provinceId" : privinceId}).exec().then(function(rs){
 rs.forEach(function(r){

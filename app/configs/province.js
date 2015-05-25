@@ -4,14 +4,7 @@
 module.exports = {
  PROVINCEES:[
  /*
-  {"id":"5509080d8faee0fbe0c4a6d0","name":"黑龙江省",   "alias":"黑龙江"},
-  {"id":"5509080d8faee0fbe0c4a6d2","name":"江苏省",   "alias":"江苏"},
-  {"id":"5509080d8faee0fbe0c4a6d5","name":"福建省",   "alias":"福建"},
-  {"id":"5509080d8faee0fbe0c4a6d6","name":"江西省",   "alias":"江西"},
-  {"id":"5509080d8faee0fbe0c4a6d9","name":"湖北省",   "alias":"湖北"},
-  {"id":"5509080d8faee0fbe0c4a6da","name":"湖南省",   "alias":"湖南"},
   {"id":"5509080d8faee0fbe0c4a6dc","name":"广西壮族自治区",   "alias":"广西"},
-  {"id":"5509080d8faee0fbe0c4a6dd","name":"海南省",   "alias":"海南"},
   {"id":"5509080d8faee0fbe0c4a6df","name":"四川省",   "alias":"四川"},
   {"id":"5509080d8faee0fbe0c4a6e0","name":"贵州省",   "alias":"贵州"},
   {"id":"5509080d8faee0fbe0c4a6e1","name":"云南省",   "alias":"云南"},
@@ -24,9 +17,8 @@ module.exports = {
   {"id":"5509080d8faee0fbe0c4a6e8","name":"台湾省",   "alias":"台湾"},
   {"id":"5509080d8faee0fbe0c4a6e9","name":"香港特别行政区",   "alias":"香港"},
   {"id":"5509080d8faee0fbe0c4a6ea","name":"澳门特别行政区",   "alias":"澳门"},
-  {"id":"5509080d8faee0fbe0c4a6de","name":"重庆市",   "alias":"重庆"}
  */
-{"id":"5509080d8faee0fbe0c4a6d0","name":"黑龙江省",   "alias":"黑龙江"}
+{"id":"5509080d8faee0fbe0c4a6df","name":"四川省",   "alias":"四川"}
  ]
 };
 
