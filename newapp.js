@@ -36,7 +36,6 @@ console.log("Crawler Begin Working....");
  * 1. 查询并存储全国所有的医院  Hospital
  * Tip:  将PROVINCELIST[i]修改为对应省得信息
  */
-/*
 var i = 0;
 var temp ;
 temp = setInterval(function(){
@@ -55,7 +54,6 @@ Hospital.getHospitalListByProvince(PROVINCELIST[i])
    console.log("oooo:" + err);
   });
 },100);
-*/
 
 
 /**
