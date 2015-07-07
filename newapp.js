@@ -55,7 +55,6 @@ Hospital.getHospitalListByProvince(PROVINCELIST[i])
 /**
  * 2. 获取所有医院科室并关联该科室对应的医院信息  Department
  */
-/*
 Hospital.getHospitalId()
 .then(function(ids){
   var i = 0;
@@ -80,7 +79,6 @@ Hospital.getHospitalId()
 
   },1);
 });
-*/
 
 /**
  * 3. 查询所有科室医生列表--医生基本信息  DoctorList
@@ -161,7 +159,6 @@ DoctorList.getId()
  * 直辖市，例如：北京市，去掉-市
  * 省份，例如：山东省，去掉-省
  */
-/*
 DiseaseController.getDiseaseList()
   .then(function(list){
     console.log("length: " + list.length);
@@ -204,7 +201,7 @@ DiseaseController.getDiseaseList()
           console.log("!!!!!!Err: " + err);
         });
     },1);
-  });*/
+  });
 
 /**
  * 11. 新增北京索引
@@ -291,7 +288,6 @@ Hospital.find({},
 ///**
 // * 21.3 Index合并表操作 Department
 // */
-/*
 Department.find({},
   "_id id provinceId provinceName hospitalId hospitalName name doctorCount " +
     " category order caseDoctorCount bookingDoctorCount ")
@@ -308,7 +304,7 @@ Department.find({},
     }
     //console.log("List: " + util.inspect(newList));
     Index.create(newList);
-  });*/
+  });
 
 
 /**
@@ -498,3 +494,29 @@ rs.forEach(function(r){
 });
 
 });*/
+
+
+
+// 科室关联districtId
+/*var privinceId = "5509080d8faee0fbe0c4a6d2";
+
+ Region.find({type:2,"provinceId" : privinceId}).exec().then(function(rs){
+ rs.forEach(function(r){
+ var disName = r.name.substring(0, r.name.length-1);
+ var disId = r._id;
+ console.log("DisName:"+disName+";disId:"+disId);
+ var updates = {
+ districtId:disId,
+ };
+
+ var cons ={
+ type:3,
+ "provinceId" : privinceId,
+ "district" : disName
+ };
+
+ Index.update(cons,{$set:updates},{multi:true}).exec();
+ ;
+ });
+
+ });*/
